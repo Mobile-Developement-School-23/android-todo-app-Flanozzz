@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF453A</color>
+    <color name="green">#32D74B</color>
+    <color name="blue">#0A84FF</color>
+    <color name="gray">#8E8E93</color>
+    <color name="gray_light">#48484A</color>
+
+    <color name="dark_separator">#33FFFFFF</color>
+    <color name="dark_overlay">#52000000</color>
+    <color name="dark_primary">#FFFFFF</color>
+    <color name="dark_secondary">#99FFFFFF</color>
+    <color name="dark_tertiary">#66FFFFFF</color>
+    <color name="dark_disable">#26FFFFFF</color>
+
+    <color name="light_separator">#33000000</color>
+    <color name="light_overlay">#0F000000</color>
+    <color name="light_primary">#000000</color>
+    <color name="light_secondary">#99000000</color>
+    <color name="light_tertiary">#4D000000</color>
+    <color name="light_disable">#26000000</color>
+
+    <color name="back_dark_primary">#161618</color>
+    <color name="back_dark_secondary">#252528</color>
+    <color name="back_dark_elevated">#3C3C3F</color>
+
+    <color name="back_light_primary">#F7F6F2</color>
+    <color name="back_light_secondary">#FFFFFF</color>
+    <color name="back_light_elevated">#FFFFFF</color>
+
+    <color name="transparent">#00000000</color>
+</resources>
