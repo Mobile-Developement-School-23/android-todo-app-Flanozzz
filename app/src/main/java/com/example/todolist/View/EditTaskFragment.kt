@@ -1,7 +1,6 @@
-package com.example.todolist
+package com.example.todolist.View
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,10 +15,12 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import com.example.todolist.Model.ToDoItem
+import com.example.todolist.R
 import com.example.todolist.Utils.getFormattedDate
 import com.example.todolist.Utils.getUnixTime
 import com.example.todolist.ViewModel.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
+import com.example.todolist.myFactory
 import kotlin.properties.Delegates
 
 class EditTaskFragment : Fragment() {
