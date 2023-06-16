@@ -1,12 +1,20 @@
 package com.example.todolist.Adapter
 
 import android.content.Context
+import android.graphics.Paint
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.PopupWindow
+import android.widget.TextView
+import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.IOnTaskTouchListener
@@ -64,6 +72,7 @@ class ToDoListAdapter(
         val toDoItem = toDoList[position]
         holder.binding.taskInfoTextView.text = toDoItem.getTaskText()
         holder.binding.taskInfoCheckBox.isChecked = toDoItem.isDone()
+        setStrikeThruTextFlag(toDoItem.isDone(), holder.binding.taskInfoTextView)
         setImportanceIcon(toDoItem.getImportance(), holder.binding.importanceIcon)
 
         holder.binding.taskInfoContainer
@@ -73,8 +82,7 @@ class ToDoListAdapter(
 
         holder.binding.taskInfoContainer
             .setOnLongClickListener{
-                val popupWindow = PopupMenuCreator.showPopupMenu(it, R.layout.task_actions_menu)
-                setListenersOnPopupMenuItems(popupWindow, toDoItem)
+                showPopupMenuAction(it, position, toDoItem)
                 return@setOnLongClickListener true
 
             }
@@ -82,42 +90,69 @@ class ToDoListAdapter(
             .setOnCheckedChangeListener {
                     _, isChecked ->
                 run {
+                    setStrikeThruTextFlag(isChecked, holder.binding.taskInfoTextView)
                     actionListener.onCheckboxClick(toDoItem, isChecked)
                 }
             }
         holder.binding.infoTaskButton
             .setOnClickListener{
-                PopupMenuCreator.showPopupMenu(it, createPopupMenuLayout(it.context, toDoItem))
+                showPopupMenuInfo(it, toDoItem)
             }
     }
 
-    override fun getItemCount(): Int = toDoList.size
+    private fun setStrikeThruTextFlag(state: Boolean, textView: TextView){
+        if(state){
+            textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+        else{
+            textView.paintFlags = textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
+    }
 
-    private fun createPopupMenuLayout(context: Context, task: ToDoItem) : LinearLayoutCompat{
-        val layout = PopupMenuCreator.createPopupMenuLayoutContainer(context)
-        val textColor = getAndroidAttrTextColor(context, android.R.attr.textColor)
-        val dateOfCreateString = context.getString(R.string.date_of_create)
-        val dateOfChangeString = context.getString(R.string.date_of_change)
+    private fun showPopupMenuAction(view: View, position: Int, task: ToDoItem){
+        val popupMenu = PopupMenu(view.context, view)
+        val item1 = popupMenu.menu.add(Menu.NONE, MOVE_UP, Menu.NONE, view.context.getString(R.string.MoveUp))
+            .apply { isEnabled = position > 0 }
+        val item2 = popupMenu.menu.add(Menu.NONE, MOVE_DOWN, Menu.NONE, view.context.getString(R.string.MoveDown))
+            .apply { isEnabled = position < toDoList.size - 1 }
+        val item3 = popupMenu.menu.add(Menu.NONE, DELETE, Menu.NONE, view.context.getString(R.string.Delete))
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                 MOVE_UP -> {
+                     actionListener.onTaskMove(task, -1)
+                     true
+                }
+                MOVE_DOWN -> {
+                    actionListener.onTaskMove(task, 1)
+                    true
+                }
+                DELETE -> {
+                    actionListener.onTaskDelete(task)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popupMenu.show()
+    }
+
+    private fun showPopupMenuInfo(view: View, task: ToDoItem){
+        val popupMenu = PopupMenu(view.context, view)
+
+        val dateOfCreateString = view.context.getString(R.string.date_of_create)
+        val dateOfChangeString = view.context.getString(R.string.date_of_change)
         val dateOfCreateText = "$dateOfCreateString: ${getFormattedDate(task.getDateOfCreate())}"
         val dateOfChangeText = "$dateOfChangeString: ${getFormattedDate(task.getDateOfChange())}"
 
-        val dateOfCreateField = PopupMenuCreator
-            .createPopupMenuField(context, dateOfCreateText, textColor)
-        val dateOfChangeField = PopupMenuCreator
-            .createPopupMenuField(context, dateOfChangeText, textColor)
+        val item1 = popupMenu.menu.add(Menu.NONE, DATE_OF_CREATE, Menu.NONE, dateOfCreateText)
+        val item2 = popupMenu.menu.add(Menu.NONE, DATE_OF_CHANGE, Menu.NONE, dateOfChangeText)
 
-        if(task.hasDeadline()){
-            val deadlineString = context.getString(R.string.deadline)
-            val deadlineText = "$deadlineString: ${getFormattedDate(task.getDeadline())}"
-            val deadlineField = PopupMenuCreator
-                .createPopupMenuField(context, deadlineText, textColor)
-            layout.addView(deadlineField)
-        }
-
-        layout.addView(dateOfCreateField)
-        layout.addView(dateOfChangeField)
-        return layout
+        popupMenu.show()
     }
+
+    override fun getItemCount(): Int = toDoList.size
 
     private fun setImportanceIcon(importance: ToDoItem.Importance, importanceIcon: ImageView){
         when(importance){
@@ -133,18 +168,11 @@ class ToDoListAdapter(
         }
     }
 
-    private fun setListenersOnPopupMenuItems(popupWindow: PopupWindow, task: ToDoItem){
-        popupWindow.contentView.findViewById<TextView>(R.id.moveUpButton).setOnClickListener{
-            actionListener.onTaskMove(task, -1)
-            popupWindow.dismiss()
-        }
-        popupWindow.contentView.findViewById<TextView>(R.id.moveDownButton).setOnClickListener{
-            actionListener.onTaskMove(task, 1)
-            popupWindow.dismiss()
-        }
-        popupWindow.contentView.findViewById<TextView>(R.id.deleteButton).setOnClickListener{
-            actionListener.onTaskDelete(task)
-            popupWindow.dismiss()
-        }
+    companion object{
+        const val MOVE_UP = 0
+        const val MOVE_DOWN = 1
+        const val DELETE = 2
+        const val DATE_OF_CREATE = 3
+        const val DATE_OF_CHANGE = 4
     }
 }

@@ -23,4 +23,8 @@
         <item name="android:colorControlActivated">?android:attr/colorAccent</item>
     </style>
 
+    <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">?android:attr/colorForeground</item>
+    </style>
+
 </resources>

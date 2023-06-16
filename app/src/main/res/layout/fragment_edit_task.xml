@@ -23,7 +23,6 @@
                 android:id="@+id/editTextContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="104dp"
                 android:layout_marginTop="64dp"
                 app:cardCornerRadius="8dp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -37,14 +36,16 @@
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/editTextField"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="@null"
+                    android:minHeight="104dp"
                     android:hint="@string/what_to_do"
                     android:padding="16dp"
                     android:textSize="@dimen/body_text_size"
                     style="@style/Widget.AppCompat.EditText"
                     android:lineHeight="@dimen/body_line_height"
-                    android:textColor="?android:attr/textColor"/>
+                    android:textColor="?android:attr/textColor"
+                    android:gravity="top"/>
 
             </androidx.cardview.widget.CardView>
 
@@ -174,6 +175,14 @@
             android:layout_gravity="center"/>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/disablePanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#83000000"
+        android:visibility="gone"
+        android:clickable="true"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/datePickerContainer"

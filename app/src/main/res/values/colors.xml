@@ -36,4 +36,5 @@
     <color name="back_light_elevated">#FFFFFF</color>
 
     <color name="transparent">#00000000</color>
+    <color name="disablePanel">#83000000</color>
 </resources>

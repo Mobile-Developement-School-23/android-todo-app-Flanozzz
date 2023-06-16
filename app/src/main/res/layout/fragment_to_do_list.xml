@@ -69,8 +69,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/toDoListRecycleView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:itemCount="13"
+                    android:layout_height="match_parent"
+                    tools:itemCount="3"
                     tools:listitem="@layout/task"/>
 
             </androidx.core.widget.NestedScrollView>

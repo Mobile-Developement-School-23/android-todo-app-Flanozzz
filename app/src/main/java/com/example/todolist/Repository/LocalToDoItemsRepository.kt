@@ -21,6 +21,11 @@ class LocalToDoItemsRepository : IToDoItemsRepository {
         notifyListeners()
     }
 
+    override fun addToBegin(item: ToDoItem) {
+        toDoItems.add(0, item)
+        notifyListeners()
+    }
+
     override fun getItems(): ArrayList<ToDoItem> {
         return toDoItems
     }
@@ -34,8 +39,8 @@ class LocalToDoItemsRepository : IToDoItemsRepository {
         listeners.remove(listener)
     }
 
-    private fun notifyListeners(){
-        listeners.forEach{it.invoke(toDoItems)}
+    private fun notifyListeners(toDoList: List<ToDoItem> = toDoItems){
+        listeners.forEach{it.invoke(toDoList)}
     }
 
     override fun getById(id: String) : ToDoItem{
@@ -45,6 +50,7 @@ class LocalToDoItemsRepository : IToDoItemsRepository {
 
     override fun changeItem(task: ToDoItem, notifyListeners: Boolean){
         val index = getIndexById(task.getId())
+        if(index == -1) return
         toDoItems[index] = task
         notifyListeners()
     }
@@ -85,7 +91,7 @@ class LocalToDoItemsRepository : IToDoItemsRepository {
 
     companion object{
         private val items = arrayListOf(
-            ToDoItem("1e", "Купить что-то", ToDoItem.Importance.HIGH, 1691836648, false, 0, 0, true),
+            ToDoItem("1e", "Купить что-то1", ToDoItem.Importance.HIGH, 1691836648, false, 0, 0, true),
             ToDoItem("2r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
             ToDoItem("3t", "Купить что-то, где-то, зачем-то, но зачем не очень понятно", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
             ToDoItem("6y", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.DEFAULT, 1691836648, true, 0, 0, true),

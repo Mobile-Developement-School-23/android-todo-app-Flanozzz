@@ -59,7 +59,7 @@ class SelectedTaskViewModel(
 
     fun saveTask(){
         if(_isNewTaskLiveData.value!!){
-            toDoItemsRepository.addNewItem(_selectedTaskLiveData.value!!)
+            toDoItemsRepository.addToBegin(_selectedTaskLiveData.value!!)
         }
         else{
             toDoItemsRepository.changeItem(_selectedTaskLiveData.value!!)

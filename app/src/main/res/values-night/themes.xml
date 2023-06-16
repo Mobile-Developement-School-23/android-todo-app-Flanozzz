@@ -10,4 +10,5 @@
         <item name="android:colorButtonNormal">@color/dark_disable</item>
         <item name="android:statusBarColor">@color/black</item>
     </style>
+
 </resources>
