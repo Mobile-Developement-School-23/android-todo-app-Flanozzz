@@ -6,7 +6,7 @@
         <item name="lineHeight">@dimen/body_line_height</item>
     </style>
 
-    <style name="ImportancePopUpMenu">
+    <style name="PopUpMenuField">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:padding">16dp</item>
         <item name="android:background">@color/transparent</item>

@@ -1,9 +1,11 @@
 package com.example.todolist.View
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -16,8 +18,7 @@ import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import com.example.todolist.Model.ToDoItem
 import com.example.todolist.R
-import com.example.todolist.Utils.getFormattedDate
-import com.example.todolist.Utils.getUnixTime
+import com.example.todolist.Utils.*
 import com.example.todolist.ViewModel.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
 import com.example.todolist.myFactory
@@ -27,24 +28,14 @@ class EditTaskFragment : Fragment() {
 
     private lateinit var binding: FragmentEditTaskBinding
     private val viewModel: SelectedTaskViewModel by activityViewModels { myFactory() }
-    lateinit var task: ToDoItem
-    private var isNewTask by Delegates.notNull<Boolean>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentEditTaskBinding.inflate(inflater, container, false)
 
-        viewModel.isNewTaskLiveData.observe(viewLifecycleOwner){
-            isNewTask = it
-        }
-
-        viewModel.selectedTaskLiveData.observe(viewLifecycleOwner){
-            task = it.copy()
-            setTaskView()
-        }
-
+        setTaskView(viewModel.selectedTaskLiveData.value!!, viewModel.isNewTaskLiveData.value!!)
 
         binding.cancelButton.setOnClickListener(canselButtonListener)
         binding.importanceTextView.setOnClickListener(importanceButtonListener)
@@ -63,11 +54,12 @@ class EditTaskFragment : Fragment() {
     }
 
     private val importanceButtonListener = OnClickListener {
-        showPopupMenu(it)
+        val popupWindow = PopupMenuCreator.showPopupMenu(it, R.layout.importance_pop_up_menu)
+        setListenersOnPopupMenuItems(popupWindow.contentView, popupWindow)
     }
 
     private val saveButtonListener = OnClickListener {
-        viewModel.saveTask(task)
+        viewModel.saveTask()
         goBackToList()
     }
 
@@ -82,7 +74,7 @@ class EditTaskFragment : Fragment() {
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            task.setTaskText(s.toString())
+            viewModel.setTaskText(s.toString())
         }
 
         override fun afterTextChanged(s: Editable?) {
@@ -92,14 +84,15 @@ class EditTaskFragment : Fragment() {
 
     private val pickDateButtonListener = OnClickListener {
         with(binding){
-            task.setDeadline(getUnixTime(datePicker.dayOfMonth, datePicker.month, datePicker.year))
+            viewModel.setTaskDeadline(getUnixTime(datePicker.dayOfMonth, datePicker.month, datePicker.year))
         }
-        setDeadlineTextView()
+        setDeadlineTextView(viewModel.selectedTaskLiveData.value!!)
         binding.datePickerContainer.visibility = View.GONE
     }
 
     private val cancelPickDateButtonListener = OnClickListener {
         binding.datePickerContainer.visibility = View.GONE
+        setSwitcherView(viewModel.selectedTaskLiveData.value!!)
     }
 
     private val dateSwitcherListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -108,7 +101,7 @@ class EditTaskFragment : Fragment() {
         }
         else {
             binding.deadlineDateTextView.visibility = View.INVISIBLE
-            task.removeDeadline()
+            viewModel.removeTaskDeadline()
         }
     }
 
@@ -116,22 +109,23 @@ class EditTaskFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun setDeleteButtonView(){
+    private fun setDeleteButtonView(isNewTask: Boolean){
         if(isNewTask){
-            binding.deleteButton.setTextColor(resources.getColor(R.color.blue))
             binding.deleteButton.isEnabled = false
+            val disableColor = getAndroidAttrTextColor(requireContext(), android.R.attr.colorButtonNormal)
+            binding.deleteButton.setTextColor(disableColor)
+            binding.deleteButton.iconTint = ColorStateList.valueOf(disableColor)
+
         }
     }
 
-    private fun setSwitcherView(){
-        if (task.hasDeadline()){
-            binding.dateSwitcher.setOnCheckedChangeListener(null)
-            binding.dateSwitcher.isChecked = true
-            binding.dateSwitcher.setOnCheckedChangeListener(dateSwitcherListener)
-        }
+    private fun setSwitcherView(task: ToDoItem){
+        binding.dateSwitcher.setOnCheckedChangeListener(null)
+        binding.dateSwitcher.isChecked = task.hasDeadline()
+        binding.dateSwitcher.setOnCheckedChangeListener(dateSwitcherListener)
     }
 
-    private fun setDeadlineTextView(){
+    private fun setDeadlineTextView(task: ToDoItem){
         if (task.hasDeadline()){
             binding.deadlineDateTextView.visibility = View.VISIBLE
             binding.deadlineDateTextView.text = getFormattedDate(task.getDeadline())
@@ -141,11 +135,11 @@ class EditTaskFragment : Fragment() {
         }
     }
 
-    private fun setEditFieldView(){
+    private fun setEditFieldView(task: ToDoItem){
         binding.editTextField.setText(task.getTaskText())
     }
 
-    private fun setImportanceView(){
+    private fun setImportanceView(task: ToDoItem){
         when(task.getImportance()){
             ToDoItem.Importance.DEFAULT -> binding.importanceStateTextView.text = getString(R.string.No)
             ToDoItem.Importance.LOW -> binding.importanceStateTextView.text = getString(R.string.Low)
@@ -153,40 +147,12 @@ class EditTaskFragment : Fragment() {
         }
     }
 
-    private fun setTaskView(){
-        setEditFieldView()
-        setImportanceView()
-        setDeadlineTextView()
-        setSwitcherView()
-        setDeleteButtonView()
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun showPopupMenu(view: View){
-        val popupWindow = PopupWindow(view.context)
-
-        val inflater = LayoutInflater.from(view.context)
-
-        val contentView = inflater.inflate(R.layout.importance_pop_up_menu, null)
-
-        popupWindow.contentView = contentView
-        setListenersOnPopupMenuItems(popupWindow.contentView, popupWindow)
-        setCloseWhenTouchOutsideEvent(popupWindow)
-
-        popupWindow.showAsDropDown(view, 0, 0)
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setCloseWhenTouchOutsideEvent(popupWindow: PopupWindow){
-        popupWindow.isOutsideTouchable = true
-        popupWindow.setTouchInterceptor { _, event ->
-            if (event.action == MotionEvent.ACTION_OUTSIDE) {
-                popupWindow.dismiss()
-                true
-            } else {
-                false
-            }
-        }
+    private fun setTaskView(task: ToDoItem, isNewTask: Boolean){
+        setEditFieldView(task)
+        setImportanceView(task)
+        setDeadlineTextView(task)
+        setSwitcherView(task)
+        setDeleteButtonView(isNewTask)
     }
 
     private fun setListenersOnPopupMenuItems(container: View, popupWindow: PopupWindow){
@@ -205,7 +171,7 @@ class EditTaskFragment : Fragment() {
     }
 
     private fun changeTaskImportance(importance: ToDoItem.Importance){
-        task.setImportance(importance)
-        setImportanceView()
+        viewModel.setTaskImportance(importance)
+        setImportanceView(viewModel.selectedTaskLiveData.value!!)
     }
 }

@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.todolist.Model.ToDoItem
 import com.example.todolist.Repository.IToDoItemsRepository
+import com.example.todolist.Utils.getCurrentUnixTime
+import com.example.todolist.Utils.getUnixTime
 
 class SelectedTaskViewModel(
     private val toDoItemsRepository: IToDoItemsRepository
 ) : ViewModel() {
-    private var _selectedTaskLiveData = MutableLiveData<ToDoItem>()
+    private var _selectedTaskLiveData = MutableLiveData(getNewTask())
     val selectedTaskLiveData: LiveData<ToDoItem> = _selectedTaskLiveData
 
     private var _isNewTaskLiveData = MutableLiveData(false)
@@ -23,25 +25,44 @@ class SelectedTaskViewModel(
 
     fun createTask(){
         _isNewTaskLiveData.value = true
-        _selectedTaskLiveData.value = ToDoItem(
+        _selectedTaskLiveData.value = getNewTask()
+    }
+
+    private fun getNewTask(): ToDoItem{
+        return ToDoItem(
             id = "tmpId_" + System.currentTimeMillis(),
             taskText = "",
             importance = ToDoItem.Importance.DEFAULT,
             deadline = 0,
             isDone = false,
-            dateOfCreate = System.currentTimeMillis(),
-            dateOfChange = System.currentTimeMillis(),
+            dateOfCreate = getCurrentUnixTime(),
+            dateOfChange = getCurrentUnixTime(),
             hasDeadline = false
         )
     }
 
-    fun saveTask(task: ToDoItem){
-        _selectedTaskLiveData.value = task
+    fun setTaskDeadline(deadline: Long){
+        _selectedTaskLiveData.value!!.setDeadline(deadline)
+    }
+
+    fun setTaskText(text: String){
+        _selectedTaskLiveData.value!!.setTaskText(text)
+    }
+
+    fun removeTaskDeadline(){
+        _selectedTaskLiveData.value!!.removeDeadline()
+    }
+
+    fun setTaskImportance(importance: ToDoItem.Importance){
+        _selectedTaskLiveData.value!!.setImportance(importance)
+    }
+
+    fun saveTask(){
         if(_isNewTaskLiveData.value!!){
-            toDoItemsRepository.addNewItem(task)
+            toDoItemsRepository.addNewItem(_selectedTaskLiveData.value!!)
         }
         else{
-            toDoItemsRepository.changeItem(task)
+            toDoItemsRepository.changeItem(_selectedTaskLiveData.value!!)
         }
     }
 

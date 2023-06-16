@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="MyTasks">Мои дела</string>
-    <string name="done">Выволнено — 5</string>
+    <string name="done">Выволнено —</string>
     <string name="buy_smth">Купить что-то</string>
     <string name="new_">Новое</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -27,4 +27,10 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="MoveUp">Верх</string>
+    <string name="MoveDown">Вниз</string>
+
+    <string name="date_of_create">Дата создания</string>
+    <string name="date_of_change">Дата изменения</string>
+    <string name="deadline">Дедлайн</string>
 </resources>

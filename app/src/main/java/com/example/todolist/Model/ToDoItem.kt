@@ -1,6 +1,7 @@
 package com.example.todolist.Model
 
 import android.os.Parcelable
+import com.example.todolist.Utils.getCurrentUnixTime
 
 data class ToDoItem(
     private val id: String,
@@ -54,23 +55,23 @@ data class ToDoItem(
 
     fun setTaskText(newTaskText: String) {
         taskText = newTaskText
-        dateOfChange = System.currentTimeMillis()
+        dateOfChange = getCurrentUnixTime()
     }
 
     fun setImportance(newImportance: Importance) {
         importance = newImportance
-        dateOfChange = System.currentTimeMillis()
+        dateOfChange = getCurrentUnixTime()
     }
 
     fun setDeadline(newDeadline: Long) {
         deadline = newDeadline
-        dateOfChange = System.currentTimeMillis()
+        dateOfChange = getCurrentUnixTime()
         hasDeadline = true
     }
 
     fun setIsDone(newIsDone: Boolean) {
         isDone = newIsDone
-        dateOfChange = System.currentTimeMillis()
+        dateOfChange = getCurrentUnixTime()
     }
 
     fun removeDeadline(){

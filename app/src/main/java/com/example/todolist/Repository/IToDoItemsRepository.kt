@@ -8,7 +8,9 @@ interface IToDoItemsRepository {
     fun addListener(listener: ToDoListListener)
     fun removeListener(listener: ToDoListListener)
     fun getById(id: String) : ToDoItem
-    fun changeItem(task: ToDoItem)
+    fun changeItem(task: ToDoItem, notifyListeners: Boolean = true)
     fun deleteItem(id: String)
-    fun createNewItem() : ToDoItem
+    fun moveItem(task: ToDoItem, moveBy: Int)
+    fun getCompletedTasksCount(): Int
+    fun getCompletedTasks(): ArrayList<ToDoItem>
 }

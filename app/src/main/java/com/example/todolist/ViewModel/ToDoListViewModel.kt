@@ -25,4 +25,28 @@ open class ToDoListViewModel(
     init{
         toDoItemsRepository.addListener(toDoListListener)
     }
+
+    fun changeTask(task: ToDoItem, notifyListeners: Boolean){
+        toDoItemsRepository.changeItem(task, notifyListeners)
+    }
+
+    fun moveTask(task: ToDoItem, moveBy: Int){
+        toDoItemsRepository.moveItem(task, moveBy)
+    }
+
+    fun deleteTask(task: ToDoItem){
+        toDoItemsRepository.deleteItem(task.getId())
+    }
+
+    fun getCompletedTasksCount() : Int{
+        return toDoItemsRepository.getCompletedTasksCount()
+    }
+
+    fun getCompletedTasks(): ArrayList<ToDoItem>{
+        return toDoItemsRepository.getCompletedTasks()
+    }
+
+    fun getAllTasks(): ArrayList<ToDoItem>{
+        return toDoItemsRepository.getItems()
+    }
 }

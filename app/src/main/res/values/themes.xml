@@ -7,6 +7,7 @@
         <item name="android:colorSecondary">@color/back_light_secondary</item>
         <item name="colorAccent">@color/blue</item>
         <item name="android:colorForeground">@color/back_light_elevated</item>
-        <item name="android:colorControlNormal">@color/light_disable</item>
+        <item name="android:colorButtonNormal">@color/light_disable</item>
+        <item name="android:statusBarColor">@color/black</item>
     </style>
 </resources>

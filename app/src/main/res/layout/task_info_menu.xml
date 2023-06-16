@@ -6,25 +6,24 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/noTextView"
+        android:id="@+id/moveUpButton"
         style="@style/PopUpMenuField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/No" />
+        android:text="@string/MoveUp" />
 
     <TextView
-        android:id="@+id/lowTextView"
+        android:id="@+id/moveDownButton"
         style="@style/PopUpMenuField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Low" />
+        android:text="@string/MoveDown" />
 
     <TextView
-        android:id="@+id/highTextView"
+        android:id="@+id/deleteButton"
         style="@style/PopUpMenuField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/High"
-        android:textColor="@color/red" />
+        android:text="@string/Delete"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
