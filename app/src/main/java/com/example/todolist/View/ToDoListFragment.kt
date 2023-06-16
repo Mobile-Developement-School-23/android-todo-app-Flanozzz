@@ -36,17 +36,10 @@ class ToDoListFragment : Fragment() {
 
         adapter = ToDoListAdapter(actionListener)
 
-        val layoutManager = object : LinearLayoutManager(requireContext()){
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
-
-            override fun canScrollHorizontally(): Boolean {
-                return false
-            }
-        }
+        val layoutManager = LinearLayoutManager(requireContext())
         binding.toDoListRecycleView.layoutManager = layoutManager
         binding.toDoListRecycleView.adapter = adapter
+        binding.toDoListRecycleView.isNestedScrollingEnabled = false
 
         viewModel.toDoItemsLiveData.observe(viewLifecycleOwner){ list ->
             adapter.toDoList = if(viewModel.getShowOnlyCompletedState()) list.filter { it.isDone() } else list
