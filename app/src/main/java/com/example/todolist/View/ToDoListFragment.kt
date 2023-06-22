@@ -1,7 +1,7 @@
 package com.example.todolist.View
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -41,8 +41,13 @@ class ToDoListFragment : Fragment() {
         binding.toDoListRecycleView.adapter = adapter
         binding.toDoListRecycleView.isNestedScrollingEnabled = false
 
-        viewModel.toDoItemsLiveData.observe(viewLifecycleOwner){ list ->
-            adapter.toDoList = if(viewModel.getShowOnlyCompletedState()) list.filter { it.isDone() } else list
+        viewModel.viewableTasks.observe(viewLifecycleOwner){ list ->
+            adapter.toDoList = list
+        }
+
+        viewModel.showOnlyUnfinishedStateLiveData.observe(viewLifecycleOwner){
+            viewModel.showTasksByState(it)
+            setEyeIcon(it)
         }
 
         binding.addTaskButton.setOnClickListener(addTaskButtonListener)
@@ -50,32 +55,27 @@ class ToDoListFragment : Fragment() {
 
         setNumberOfCompletedTasksText(viewModel.getCompletedTasksCount())
 
-        showTasks(binding.eyeButton)
 
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setNumberOfCompletedTasksText(count: Int){
         val descText = requireContext().getString(R.string.done)
         binding.doneInfoTextView.text = "$descText $count/${viewModel.getTotalTasksCount()}"
     }
 
-    private fun showTasks(view: ImageFilterView){
-        val iconRes: Int
-        if(viewModel.getShowOnlyCompletedState()){
-            adapter.toDoList = viewModel.toDoItemsLiveData.value!!.filter { it.isDone() }
-            iconRes = R.drawable.ic_baseline_visibility_off_24
+    private fun setEyeIcon(isOpen: Boolean){
+        val iconRes = if(isOpen){
+            R.drawable.ic_baseline_visibility_off_24
+        } else{
+            R.drawable.visibility
         }
-        else{
-            adapter.toDoList = viewModel.toDoItemsLiveData.value!!
-            iconRes = R.drawable.visibility
-        }
-        view.setImageResource(iconRes)
+        binding.eyeButton.setImageResource(iconRes)
     }
 
     private val eyeButtonListener = OnClickListener {
-        viewModel.changeState()
-        showTasks(it as ImageFilterView)
+        viewModel.changeShowOnlyUnfinishedState()
     }
 
     private val addTaskButtonListener = OnClickListener{
@@ -104,6 +104,7 @@ class ToDoListFragment : Fragment() {
 
         override fun onTaskDelete(task: ToDoItem) {
             viewModel.deleteTask(task)
+            setNumberOfCompletedTasksText(viewModel.getCompletedTasksCount())
         }
     }
 }

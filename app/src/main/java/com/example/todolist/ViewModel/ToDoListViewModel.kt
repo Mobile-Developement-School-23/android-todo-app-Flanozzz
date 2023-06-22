@@ -13,22 +13,44 @@ open class ToDoListViewModel(
     private val _toDoItemsLiveData: MutableLiveData<List<ToDoItem>> = MutableLiveData(emptyList())
     val toDoItemsLiveData: LiveData<List<ToDoItem>> = _toDoItemsLiveData
 
-    private var showOnlyCompletedState = false
+    private val _viewableTasks: MutableLiveData<List<ToDoItem>> = MutableLiveData(_toDoItemsLiveData.value)
+    val viewableTasks: LiveData<List<ToDoItem>> = _viewableTasks
 
-    private val toDoListListener: ToDoListListener = {
-        _toDoItemsLiveData.value = it
+    private val _showOnlyUnfinishedStateLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
+    val showOnlyUnfinishedStateLiveData: LiveData<Boolean> = _showOnlyUnfinishedStateLiveData
+
+
+    private val toDoListListener: ToDoListListener = {list ->
+        _toDoItemsLiveData.value = list
+        if(_showOnlyUnfinishedStateLiveData.value != null){
+            if(_showOnlyUnfinishedStateLiveData.value!!){
+                _viewableTasks.value = list.filter { !it.isDone() }
+            }
+            else {
+                _viewableTasks.value = list
+            }
+        }
     }
 
     init{
         toDoItemsRepository.addListener(toDoListListener)
     }
 
-    fun getShowOnlyCompletedState() : Boolean{
-        return showOnlyCompletedState
+    fun changeShowOnlyUnfinishedState(){
+        if(_showOnlyUnfinishedStateLiveData.value != null){
+            _showOnlyUnfinishedStateLiveData.value = !_showOnlyUnfinishedStateLiveData.value!!
+        }
     }
 
-    fun changeState(){
-        showOnlyCompletedState = !showOnlyCompletedState
+    fun showTasksByState(state: Boolean){
+        if(_toDoItemsLiveData.value != null){
+            if(state){
+                _viewableTasks.value = _toDoItemsLiveData.value!!.filter { !it.isDone() }
+            }
+            else {
+                _viewableTasks.value = _toDoItemsLiveData.value
+            }
+        }
     }
 
     fun changeTask(task: ToDoItem, notifyListeners: Boolean){
