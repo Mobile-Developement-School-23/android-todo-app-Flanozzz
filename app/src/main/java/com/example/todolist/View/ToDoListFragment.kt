@@ -16,6 +16,7 @@ import com.example.todolist.Adapter.ToDoListAdapter
 import com.example.todolist.IOnTaskTouchListener
 import com.example.todolist.Model.ToDoItem
 import com.example.todolist.R
+import com.example.todolist.Repository.ToDoNetworkRepository
 import com.example.todolist.ViewModel.SelectedTaskViewModel
 import com.example.todolist.ViewModel.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
@@ -54,7 +55,6 @@ class ToDoListFragment : Fragment() {
         binding.eyeButton.setOnClickListener(eyeButtonListener)
 
         setNumberOfCompletedTasksText(viewModel.getCompletedTasksCount())
-
 
         return binding.root
     }

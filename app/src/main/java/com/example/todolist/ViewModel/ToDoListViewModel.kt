@@ -1,11 +1,17 @@
 package com.example.todolist.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.todolist.Model.ToDoItem
 import com.example.todolist.Repository.IToDoItemsRepository
 import com.example.todolist.Repository.ToDoListListener
+import com.example.todolist.Repository.ToDoNetworkRepository
+import com.example.todolist.Utils.getCurrentUnixTime
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 open class ToDoListViewModel(
     private val toDoItemsRepository: IToDoItemsRepository
@@ -19,21 +25,20 @@ open class ToDoListViewModel(
     private val _showOnlyUnfinishedStateLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     val showOnlyUnfinishedStateLiveData: LiveData<Boolean> = _showOnlyUnfinishedStateLiveData
 
-
-    private val toDoListListener: ToDoListListener = {list ->
-        _toDoItemsLiveData.value = list
-        if(_showOnlyUnfinishedStateLiveData.value != null){
-            if(_showOnlyUnfinishedStateLiveData.value!!){
-                _viewableTasks.value = list.filter { !it.isDone() }
-            }
-            else {
-                _viewableTasks.value = list
+    init{
+        viewModelScope.launch {
+            toDoItemsRepository.getItems().collect{list ->
+                _toDoItemsLiveData.value = list
+                if(_showOnlyUnfinishedStateLiveData.value != null){
+                    if(_showOnlyUnfinishedStateLiveData.value!!){
+                        _viewableTasks.value = list.filter { !it.isDone() }
+                    }
+                    else {
+                        _viewableTasks.value = list
+                    }
+                }
             }
         }
-    }
-
-    init{
-        toDoItemsRepository.addListener(toDoListListener)
     }
 
     fun changeShowOnlyUnfinishedState(){

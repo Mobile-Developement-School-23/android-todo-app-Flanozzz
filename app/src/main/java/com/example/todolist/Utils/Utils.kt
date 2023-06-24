@@ -1,9 +1,11 @@
 package com.example.todolist.Utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
+import android.provider.Settings
 import java.util.*
 
 
@@ -33,4 +35,9 @@ fun getAndroidAttrTextColor(context: Context, colorId: Int): Int {
 
 fun getCurrentUnixTime(): Long{
     return System.currentTimeMillis() / 1000
+}
+
+@SuppressLint("HardwareIds")
+fun getDeviceId(context: Context): String {
+    return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
 }

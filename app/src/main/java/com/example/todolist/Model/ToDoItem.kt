@@ -2,16 +2,17 @@ package com.example.todolist.Model
 
 import android.os.Parcelable
 import com.example.todolist.Utils.getCurrentUnixTime
+import com.google.gson.annotations.SerializedName
 
 data class ToDoItem(
-    private val id: String,
-    private var taskText: String,
-    private var importance: Importance,
-    private var deadline: Long,
-    private var isDone: Boolean,
-    private val dateOfCreate: Long,
-    private var dateOfChange: Long,
-    private var hasDeadline: Boolean
+    @SerializedName("id") private val id: String,
+    @SerializedName("text") private var taskText: String,
+    @SerializedName("importance") private var importance: Importance,
+    @SerializedName("deadline") private var deadline: Long,
+    @SerializedName("done") private var isDone: Boolean,
+    @SerializedName("created_at") private val dateOfCreate: Long,
+    @SerializedName("changed_at") private var dateOfChange: Long,
+    private var hasDeadline: Boolean = false
 ) {
     enum class Importance{
         LOW,
