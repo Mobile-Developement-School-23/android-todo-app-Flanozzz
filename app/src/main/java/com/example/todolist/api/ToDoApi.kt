@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 
 interface ToDoApi {
     @GET("list")
@@ -19,4 +20,10 @@ interface ToDoApi {
         @Header("X-Last-Known-Revision") revision: Int,
         @Body request: ListRequest
     ): Response<ListResponse>
+
+    @POST("list")
+    suspend fun addElement(
+        @Header("X-Last-Known-Revision") revision: Int,
+        @Body request: ListElement
+    ): Response<ListElement>
 }

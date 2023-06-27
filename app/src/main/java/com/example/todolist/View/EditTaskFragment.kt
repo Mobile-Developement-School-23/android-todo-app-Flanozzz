@@ -10,7 +10,6 @@ import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.todolist.Model.ToDoItem
@@ -18,14 +17,13 @@ import com.example.todolist.R
 import com.example.todolist.Utils.*
 import com.example.todolist.ViewModel.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
-import com.example.todolist.myFactory
 import java.util.*
 
 
 class EditTaskFragment : Fragment() {
 
     private lateinit var binding: FragmentEditTaskBinding
-    private val viewModel: SelectedTaskViewModel by activityViewModels { myFactory() }
+    private val viewModel: SelectedTaskViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -161,14 +159,14 @@ class EditTaskFragment : Fragment() {
 
     private fun setSwitcherView(task: ToDoItem){
         binding.dateSwitcher.setOnCheckedChangeListener(null)
-        binding.dateSwitcher.isChecked = task.hasDeadline()
+        binding.dateSwitcher.isChecked = task.deadline != null
         binding.dateSwitcher.setOnCheckedChangeListener(dateSwitcherListener)
     }
 
     private fun setDeadlineTextView(task: ToDoItem){
-        if (task.hasDeadline()){
+        if (task.deadline != null){
             binding.deadlineDateTextView.visibility = View.VISIBLE
-            binding.deadlineDateTextView.text = getFormattedDate(task.getDeadline())
+            binding.deadlineDateTextView.text = getFormattedDate(task.deadline)
         }
         else{
             binding.deadlineDateTextView.visibility = View.INVISIBLE
@@ -176,11 +174,11 @@ class EditTaskFragment : Fragment() {
     }
 
     private fun setEditFieldView(task: ToDoItem){
-        binding.editTextField.setText(task.getTaskText())
+        binding.editTextField.setText(task.text)
     }
 
     private fun setImportanceView(task: ToDoItem){
-        when(task.getImportance()){
+        when(task.importance){
             ToDoItem.Importance.DEFAULT -> binding.importanceStateTextView.text = getString(R.string.No)
             ToDoItem.Importance.LOW -> binding.importanceStateTextView.text = getString(R.string.Low)
             ToDoItem.Importance.HIGH -> binding.importanceStateTextView.text = getString(R.string.High)

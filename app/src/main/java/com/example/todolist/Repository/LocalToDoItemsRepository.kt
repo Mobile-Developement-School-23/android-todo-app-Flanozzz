@@ -1,7 +1,9 @@
 package com.example.todolist.Repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.example.todolist.Model.ToDoItem
+import com.example.todolist.Model.ToDoItemDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -112,38 +114,38 @@ import kotlin.collections.ArrayList
 //    }
 //}
 
-class LocalToDoItemsRepository : IToDoItemsRepository {
+class LocalToDoItemsRepository: IToDoItemsRepository {
 
     private val toDoItemsFlow: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(items)
 
-    override fun addNewItem(item: ToDoItem) {
+    override suspend fun addNewItem(item: ToDoItem) {
         val updatedItems = toDoItemsFlow.value.toMutableList()
         updatedItems.add(item)
         toDoItemsFlow.value = updatedItems
     }
 
-    override fun addToBegin(item: ToDoItem) {
-        val updatedItems = toDoItemsFlow.value.toMutableList()
-        updatedItems.add(0, item)
-        toDoItemsFlow.value = updatedItems
-    }
+//    override fun addToBegin(item: ToDoItem) {
+//        val updatedItems = toDoItemsFlow.value.toMutableList()
+//        updatedItems.add(0, item)
+//        toDoItemsFlow.value = updatedItems
+//    }
 
     override fun getItems(): MutableStateFlow<List<ToDoItem>> = toDoItemsFlow
 
     override fun getById(id: String): ToDoItem? {
-        return toDoItemsFlow.value.find { it.getId() == id }
+        return toDoItemsFlow.value.find { it.id == id }
     }
 
-    override fun changeItem(task: ToDoItem, notifyListeners: Boolean) {
+    override suspend fun changeItem(task: ToDoItem) {
         val updatedItems = toDoItemsFlow.value.toMutableList()
-        val index = getIndexById(task.getId())
+        val index = getIndexById(task.id)
         if (index != -1) {
             updatedItems[index] = task
             toDoItemsFlow.value = updatedItems
         }
     }
 
-    override fun deleteItem(id: String) {
+    override suspend fun deleteItem(id: String) {
         val updatedItems = toDoItemsFlow.value.toMutableList()
         val index = getIndexById(id)
         if (index != -1) {
@@ -153,7 +155,7 @@ class LocalToDoItemsRepository : IToDoItemsRepository {
     }
 
     override fun moveItem(task: ToDoItem, moveBy: Int) {
-        val oldIndex = getIndexById(task.getId())
+        val oldIndex = getIndexById(task.id)
         if(oldIndex == -1) return
         val newIndex = oldIndex + moveBy
         if(newIndex < 0 || newIndex >= items.size) return
@@ -165,37 +167,37 @@ class LocalToDoItemsRepository : IToDoItemsRepository {
     override fun getCompletedTasksCount(): Int{
         var count = 0
         toDoItemsFlow.value.forEach {
-            if(it.isDone()) count++
+            if(it.isDone) count++
         }
         return count
     }
 
     override fun getCompletedTasks(): ArrayList<ToDoItem> {
-        return ArrayList(toDoItemsFlow.value.filter { it.isDone() })
+        return ArrayList(toDoItemsFlow.value.filter { it.isDone })
     }
 
     private fun getIndexById(id: String): Int{
-        return toDoItemsFlow.value.indexOfFirst { it.getId() == id }
+        return toDoItemsFlow.value.indexOfFirst { it.id == id }
     }
 
     companion object{
         private val items = arrayListOf(
-            ToDoItem("1e", "Купить что-то1", ToDoItem.Importance.HIGH, 1691836648, false, 0, 0, true),
-            ToDoItem("2r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
-            ToDoItem("3t", "Купить что-то, где-то, зачем-то, но зачем не очень понятно", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
-            ToDoItem("6y", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.DEFAULT, 1691836648, true, 0, 0, true),
-            ToDoItem("7", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
-            ToDoItem("8", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.HIGH, 0, true, 0, 0, false),
-            ToDoItem("9", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.LOW, 0, false, 0, 0, false),
-            ToDoItem("q", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, 0, 0, false),
-            ToDoItem("w", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
-            ToDoItem("e", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, 0, 0, false),
-            ToDoItem("r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
-            ToDoItem("t", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, 0, 0, false),
-            ToDoItem("y", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, 0, 0, false),
-            ToDoItem("u", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, 0, 0, false),
-            ToDoItem("i", "Купить что-то", ToDoItem.Importance.LOW, 0, false, 0, 0, false),
-            ToDoItem("o", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, 0, 0, false),
+            ToDoItem("1e", "Купить что-то1", ToDoItem.Importance.HIGH, 1691836648, false, null,0, 0),
+            ToDoItem("2r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
+            ToDoItem("3t", "Купить что-то, где-то, зачем-то, но зачем не очень понятно", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+            ToDoItem("6y", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.DEFAULT, 1691836648, true, null, 0, 0),
+            ToDoItem("7", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+            ToDoItem("8", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.HIGH, 0, true, null, 0, 0),
+            ToDoItem("9", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.LOW, 0, false, null,0, 0),
+            ToDoItem("q", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+            ToDoItem("w", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
+            ToDoItem("e", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
+            ToDoItem("r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+            ToDoItem("t", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
+            ToDoItem("y", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+            ToDoItem("u", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+            ToDoItem("i", "Купить что-то", ToDoItem.Importance.LOW, 0, false, null, 0, 0),
+            ToDoItem("o", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
         )
     }
 }

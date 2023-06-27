@@ -1,20 +1,14 @@
 package com.example.todolist.Adapter
 
-import android.content.Context
 import android.graphics.Paint
-import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.appcompat.view.menu.MenuPopupHelper
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.IOnTaskTouchListener
@@ -34,7 +28,7 @@ class UserDiffCallBack(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem.getId() == newItem.getId()
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -70,14 +64,14 @@ class ToDoListAdapter(
 
     override fun onBindViewHolder(holder: ToDoItemViewHolder, position: Int) {
         val toDoItem = toDoList[position]
-        holder.binding.taskInfoTextView.text = toDoItem.getTaskText()
-        holder.binding.taskInfoCheckBox.isChecked = toDoItem.isDone()
-        setStrikeThruTextFlag(toDoItem.isDone(), holder.binding.taskInfoTextView)
-        setImportanceIcon(toDoItem.getImportance(), holder.binding.importanceIcon)
+        holder.binding.taskInfoTextView.text = toDoItem.text
+        holder.binding.taskInfoCheckBox.isChecked = toDoItem.isDone
+        setStrikeThruTextFlag(toDoItem.isDone, holder.binding.taskInfoTextView)
+        setImportanceIcon(toDoItem.importance, holder.binding.importanceIcon)
 
         holder.binding.taskInfoContainer
             .setOnClickListener{
-                actionListener.onChangeButtonClick(toDoItem.getId())
+                actionListener.onChangeButtonClick(toDoItem.id)
             }
 
         holder.binding.taskInfoContainer
@@ -90,6 +84,7 @@ class ToDoListAdapter(
             .setOnCheckedChangeListener {
                     _, isChecked ->
                 run {
+                    Log.e("AAA", "adapter ${toDoItem.text} $isChecked")
                     setStrikeThruTextFlag(isChecked, holder.binding.taskInfoTextView)
                     actionListener.onCheckboxClick(toDoItem, isChecked)
                 }
@@ -111,11 +106,11 @@ class ToDoListAdapter(
 
     private fun showPopupMenuAction(view: View, position: Int, task: ToDoItem){
         val popupMenu = PopupMenu(view.context, view)
-        val item1 = popupMenu.menu.add(Menu.NONE, MOVE_UP, Menu.NONE, view.context.getString(R.string.MoveUp))
+        popupMenu.menu.add(Menu.NONE, MOVE_UP, Menu.NONE, view.context.getString(R.string.MoveUp))
             .apply { isEnabled = position > 0 }
-        val item2 = popupMenu.menu.add(Menu.NONE, MOVE_DOWN, Menu.NONE, view.context.getString(R.string.MoveDown))
+        popupMenu.menu.add(Menu.NONE, MOVE_DOWN, Menu.NONE, view.context.getString(R.string.MoveDown))
             .apply { isEnabled = position < toDoList.size - 1 }
-        val item3 = popupMenu.menu.add(Menu.NONE, DELETE, Menu.NONE, view.context.getString(R.string.Delete))
+        popupMenu.menu.add(Menu.NONE, DELETE, Menu.NONE, view.context.getString(R.string.Delete))
 
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -143,11 +138,11 @@ class ToDoListAdapter(
 
         val dateOfCreateString = view.context.getString(R.string.date_of_create)
         val dateOfChangeString = view.context.getString(R.string.date_of_change)
-        val dateOfCreateText = "$dateOfCreateString: ${getFormattedDate(task.getDateOfCreate())}"
-        val dateOfChangeText = "$dateOfChangeString: ${getFormattedDate(task.getDateOfChange())}"
+        val dateOfCreateText = "$dateOfCreateString: ${getFormattedDate(task.dateOfCreate)}"
+        val dateOfChangeText = "$dateOfChangeString: ${getFormattedDate(task.dateOfChange)}"
 
-        val item1 = popupMenu.menu.add(Menu.NONE, DATE_OF_CREATE, Menu.NONE, dateOfCreateText)
-        val item2 = popupMenu.menu.add(Menu.NONE, DATE_OF_CHANGE, Menu.NONE, dateOfChangeText)
+        popupMenu.menu.add(Menu.NONE, DATE_OF_CREATE, Menu.NONE, dateOfCreateText)
+        popupMenu.menu.add(Menu.NONE, DATE_OF_CHANGE, Menu.NONE, dateOfChangeText)
 
         popupMenu.show()
     }
