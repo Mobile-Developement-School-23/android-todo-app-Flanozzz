@@ -2,8 +2,7 @@ package com.example.todolist.Repository
 
 import android.content.Context
 import com.example.todolist.Model.ToDoDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.todolist.api.RetrofitInstance
 
 object Repositories {
 
@@ -15,6 +14,10 @@ object Repositories {
 
     val toDoDbRepository: IToDoItemsRepository by lazy{
         LocalDbRepository(ToDoDatabase.getDatabase(applicationContext).toDoItemDao())
+    }
+
+    val toDoNetworkRepository: IToDoItemsRepository by lazy {
+        ToDoNetworkRepository(RetrofitInstance.api)
     }
 
     fun init(context: Context){

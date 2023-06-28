@@ -1,14 +1,8 @@
 package com.example.todolist.Repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import com.example.todolist.Model.ToDoItem
-import com.example.todolist.Model.ToDoItemDao
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import java.util.*
-import kotlin.collections.ArrayList
 
 //class LocalToDoItemsRepository : IToDoItemsRepository {
 //
@@ -130,9 +124,9 @@ class LocalToDoItemsRepository: IToDoItemsRepository {
 //        toDoItemsFlow.value = updatedItems
 //    }
 
-    override fun getItems(): MutableStateFlow<List<ToDoItem>> = toDoItemsFlow
+    override suspend fun getItems(): MutableStateFlow<List<ToDoItem>> = toDoItemsFlow
 
-    override fun getById(id: String): ToDoItem? {
+    override suspend fun getById(id: String): ToDoItem? {
         return toDoItemsFlow.value.find { it.id == id }
     }
 
@@ -164,17 +158,17 @@ class LocalToDoItemsRepository: IToDoItemsRepository {
         toDoItemsFlow.value = updatedItems
     }
 
-    override fun getCompletedTasksCount(): Int{
-        var count = 0
-        toDoItemsFlow.value.forEach {
-            if(it.isDone) count++
-        }
-        return count
-    }
-
-    override fun getCompletedTasks(): ArrayList<ToDoItem> {
-        return ArrayList(toDoItemsFlow.value.filter { it.isDone })
-    }
+//    override fun getCompletedTasksCount(): Int{
+//        var count = 0
+//        toDoItemsFlow.value.forEach {
+//            if(it.isDone) count++
+//        }
+//        return count
+//    }
+//
+//    override fun getCompletedTasks(): ArrayList<ToDoItem> {
+//        return ArrayList(toDoItemsFlow.value.filter { it.isDone })
+//    }
 
     private fun getIndexById(id: String): Int{
         return toDoItemsFlow.value.indexOfFirst { it.id == id }
@@ -182,22 +176,22 @@ class LocalToDoItemsRepository: IToDoItemsRepository {
 
     companion object{
         private val items = arrayListOf(
-            ToDoItem("1e", "Купить что-то1", ToDoItem.Importance.HIGH, 1691836648, false, null,0, 0),
-            ToDoItem("2r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
-            ToDoItem("3t", "Купить что-то, где-то, зачем-то, но зачем не очень понятно", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-            ToDoItem("6y", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.DEFAULT, 1691836648, true, null, 0, 0),
-            ToDoItem("7", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-            ToDoItem("8", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.HIGH, 0, true, null, 0, 0),
-            ToDoItem("9", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.LOW, 0, false, null,0, 0),
-            ToDoItem("q", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
-            ToDoItem("w", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
-            ToDoItem("e", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
-            ToDoItem("r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-            ToDoItem("t", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
-            ToDoItem("y", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-            ToDoItem("u", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
-            ToDoItem("i", "Купить что-то", ToDoItem.Importance.LOW, 0, false, null, 0, 0),
-            ToDoItem("o", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+            ToDoItem("1e", "Купить что-то1", ToDoItem.Importance.HIGH, 1691836648, false, null,0, 0, "d" )
+//            ToDoItem("2r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
+//            ToDoItem("3t", "Купить что-то, где-то, зачем-то, но зачем не очень понятно", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+//            ToDoItem("6y", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.DEFAULT, 1691836648, true, null, 0, 0),
+//            ToDoItem("7", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+//            ToDoItem("8", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.HIGH, 0, true, null, 0, 0),
+//            ToDoItem("9", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.LOW, 0, false, null,0, 0),
+//            ToDoItem("q", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+//            ToDoItem("w", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
+//            ToDoItem("e", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
+//            ToDoItem("r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+//            ToDoItem("t", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
+//            ToDoItem("y", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+//            ToDoItem("u", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+//            ToDoItem("i", "Купить что-то", ToDoItem.Importance.LOW, 0, false, null, 0, 0),
+//            ToDoItem("o", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
         )
     }
 }

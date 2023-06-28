@@ -5,23 +5,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.Model.ToDoItem
-import com.example.todolist.Repository.IToDoItemsRepository
 import com.example.todolist.Repository.Repositories
-import com.example.todolist.Utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SelectedTaskViewModel : ViewModel() {
-    private var _selectedTaskLiveData = MutableLiveData(getNewTask())
+class SelectedTaskViewModel(
+    private val deviceId: String
+) : ViewModel() {
+    private var _selectedTaskLiveData = MutableLiveData(ToDoItem.getDefaultTask(deviceId))
     val selectedTaskLiveData: LiveData<ToDoItem> = _selectedTaskLiveData
 
     private var _isNewTaskLiveData = MutableLiveData(false)
     val isNewTaskLiveData: LiveData<Boolean> = _isNewTaskLiveData
 
+    private val repository = Repositories.toDoNetworkRepository
+    //private val repository = Repositories.toDoDbRepository
+
     fun selectTask(id: String){
         viewModelScope.launch(Dispatchers.IO) {
-            val selectedToDoItem = Repositories.toDoDbRepository.getById(id)
+            val selectedToDoItem = repository.getById(id)
             withContext(Dispatchers.Main){
                 _isNewTaskLiveData.value = false
                 _selectedTaskLiveData.value = selectedToDoItem
@@ -31,21 +34,22 @@ class SelectedTaskViewModel : ViewModel() {
 
     fun createTask(){
         _isNewTaskLiveData.value = true
-        _selectedTaskLiveData.value = getNewTask()
+        _selectedTaskLiveData.value = ToDoItem.getDefaultTask(deviceId)
     }
 
-    private fun getNewTask(): ToDoItem{
-        return ToDoItem(
-            id = "tmpId_" + System.currentTimeMillis(),
-            text = "",
-            importance = ToDoItem.Importance.DEFAULT,
-            deadline = 0,
-            isDone = false,
-            dateOfCreate = getCurrentUnixTime(),
-            dateOfChange = getCurrentUnixTime(),
-            color = null
-        )
-    }
+//    private fun getNewTask(): ToDoItem{
+//        return ToDoItem(
+//            id = UUID.randomUUID().toString(),
+//            text = "",
+//            importance = ToDoItem.Importance.DEFAULT,
+//            deadline = null,
+//            isDone = false,
+//            dateOfCreate = getCurrentUnixTime(),
+//            dateOfChange = getCurrentUnixTime(),
+//            color = null,
+//            lastUpdatedBy = "tmp"
+//        )
+//    }
 
     fun setTaskDeadline(newDeadline: Long){
         val oldTask = _selectedTaskLiveData.value
@@ -59,7 +63,6 @@ class SelectedTaskViewModel : ViewModel() {
         if(oldTask != null){
             _selectedTaskLiveData.value = oldTask.copy(text = newText)
         }
-        //_selectedTaskLiveData.value!!.setTaskText(newText)
     }
 
     fun removeTaskDeadline(){
@@ -67,7 +70,6 @@ class SelectedTaskViewModel : ViewModel() {
         if(oldTask != null){
             _selectedTaskLiveData.value = oldTask.copy(deadline = null)
         }
-        //_selectedTaskLiveData.value!!.removeDeadline()
     }
 
     fun setTaskImportance(newImportance: ToDoItem.Importance){
@@ -75,16 +77,15 @@ class SelectedTaskViewModel : ViewModel() {
         if(oldTask != null){
             _selectedTaskLiveData.value = oldTask.copy(importance = newImportance)
         }
-        //_selectedTaskLiveData.value!!.setImportance(importance)
     }
 
     fun saveTask(){
         viewModelScope.launch(Dispatchers.IO) {
             if(_isNewTaskLiveData.value!!){
-                Repositories.toDoDbRepository.addNewItem(_selectedTaskLiveData.value!!)
+                repository.addNewItem(_selectedTaskLiveData.value!!)
             }
             else{
-                Repositories.toDoDbRepository.changeItem(_selectedTaskLiveData.value!!)
+                repository.changeItem(_selectedTaskLiveData.value!!)
             }
         }
     }
@@ -92,7 +93,7 @@ class SelectedTaskViewModel : ViewModel() {
     fun deleteTask(){
         viewModelScope.launch(Dispatchers.IO) {
             if (_selectedTaskLiveData.value != null && !isNewTaskLiveData.value!!) {
-                Repositories.toDoDbRepository.deleteItem(_selectedTaskLiveData.value!!.id)
+                repository.deleteItem(_selectedTaskLiveData.value!!.id)
             }
         }
     }

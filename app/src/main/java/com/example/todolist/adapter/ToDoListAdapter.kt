@@ -1,7 +1,6 @@
-package com.example.todolist.Adapter
+package com.example.todolist.adapter
 
 import android.graphics.Paint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -69,30 +68,25 @@ class ToDoListAdapter(
         setStrikeThruTextFlag(toDoItem.isDone, holder.binding.taskInfoTextView)
         setImportanceIcon(toDoItem.importance, holder.binding.importanceIcon)
 
-        holder.binding.taskInfoContainer
-            .setOnClickListener{
+        with(holder.binding){
+            taskInfoContainer.setOnClickListener{
                 actionListener.onChangeButtonClick(toDoItem.id)
             }
 
-        holder.binding.taskInfoContainer
-            .setOnLongClickListener{
+            taskInfoContainer.setOnLongClickListener{
                 showPopupMenuAction(it, position, toDoItem)
                 return@setOnLongClickListener true
+            }
 
+            taskInfoCheckBox.setOnClickListener{
+                setStrikeThruTextFlag(!toDoItem.isDone, taskInfoTextView)
+                actionListener.onCheckboxClick(toDoItem)
             }
-        holder.binding.taskInfoCheckBox
-            .setOnCheckedChangeListener {
-                    _, isChecked ->
-                run {
-                    Log.e("AAA", "adapter ${toDoItem.text} $isChecked")
-                    setStrikeThruTextFlag(isChecked, holder.binding.taskInfoTextView)
-                    actionListener.onCheckboxClick(toDoItem, isChecked)
-                }
-            }
-        holder.binding.infoTaskButton
-            .setOnClickListener{
+
+            infoTaskButton.setOnClickListener{
                 showPopupMenuInfo(it, toDoItem)
             }
+        }
     }
 
     private fun setStrikeThruTextFlag(state: Boolean, textView: TextView){

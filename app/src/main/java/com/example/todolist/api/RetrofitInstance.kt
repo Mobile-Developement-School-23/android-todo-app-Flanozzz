@@ -1,25 +1,32 @@
 package com.example.todolist.api
 
+import com.example.todolist.Model.ToDoItem
 import com.example.todolist.Utils.Constants.Companion.BASEURL
+import com.example.todolist.Utils.Constants.Companion.TOKEN
+import com.example.todolist.Utils.ImportanceConverter
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object RetrofitInstance {
     private val retrofit by lazy{
         val httpClient = OkHttpClient.Builder().addInterceptor{chain ->
             val original = chain.request()
             val request = original.newBuilder()
-                .header("Authorization", "Bearer unsalesmanlike")
+                .header("Authorization", "Bearer $TOKEN")
                 .build()
             chain.proceed(request)
         }.build()
 
+        val gson = GsonBuilder()
+            .registerTypeAdapter(ToDoItem.Importance::class.java, ImportanceConverter())
+            .create()
+
         Retrofit.Builder()
             .client(httpClient)
             .baseUrl(BASEURL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 

@@ -1,22 +1,18 @@
 package com.example.todolist
 
-import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.todolist.Repository.IToDoItemsRepository
-import com.example.todolist.Repository.Repositories
+import com.example.todolist.Utils.getDeviceId
 import com.example.todolist.ViewModel.SelectedTaskViewModel
-import com.example.todolist.ViewModel.ToDoListViewModel
 
-open class ViewModelFactory() : ViewModelProvider.Factory {
+open class ViewModelFactory(
+    private val deviceId: String
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel = when(modelClass){
-            ToDoListViewModel::class.java -> {
-                ToDoListViewModel()
-            }
             SelectedTaskViewModel::class.java -> {
-                SelectedTaskViewModel()
+                SelectedTaskViewModel(deviceId)
             }
             else -> {
                 throw IllegalStateException("Unknown view model class")
@@ -26,10 +22,6 @@ open class ViewModelFactory() : ViewModelProvider.Factory {
     }
 }
 
-//fun Fragment.myFactory() = ViewModelFactory(
-//    toDoItemsRepository = Repositories.toDoDbRepository
-//)
-//
-//fun Activity.myFactory() = ViewModelFactory(
-//    toDoItemsRepository = Repositories.toDoDbRepository
-//)
+fun Fragment.deviceIdFactory() = ViewModelFactory(
+    deviceId = getDeviceId(requireContext())
+)

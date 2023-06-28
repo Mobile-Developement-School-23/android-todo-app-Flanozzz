@@ -17,18 +17,20 @@ import com.example.todolist.R
 import com.example.todolist.Utils.*
 import com.example.todolist.ViewModel.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
+import com.example.todolist.deviceIdFactory
 import java.util.*
 
 
 class EditTaskFragment : Fragment() {
 
     private lateinit var binding: FragmentEditTaskBinding
-    private val viewModel: SelectedTaskViewModel by activityViewModels()
+    private val viewModel: SelectedTaskViewModel by activityViewModels{deviceIdFactory()}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentEditTaskBinding.inflate(inflater, container, false)
 
         setTaskView(viewModel.selectedTaskLiveData.value!!, viewModel.isNewTaskLiveData.value!!)
