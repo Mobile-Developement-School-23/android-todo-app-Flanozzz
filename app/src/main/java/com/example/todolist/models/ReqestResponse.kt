@@ -1,4 +1,4 @@
-package com.example.todolist.Model
+package com.example.todolist.models
 
 //data class ListElement(
 //    val id: String,

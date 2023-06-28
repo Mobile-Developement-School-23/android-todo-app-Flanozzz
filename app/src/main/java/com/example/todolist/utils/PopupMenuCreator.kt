@@ -1,15 +1,11 @@
-package com.example.todolist.Utils
+package com.example.todolist.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
-import android.util.TypedValue
 import android.view.*
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import com.example.todolist.R
 
 class PopupMenuCreator {

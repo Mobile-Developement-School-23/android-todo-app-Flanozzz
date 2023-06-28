@@ -1,15 +1,14 @@
-package com.example.todolist.Repository
+package com.example.todolist.repositories
 
 import android.content.Context
-import com.example.todolist.Model.ToDoDatabase
+import com.example.todolist.models.ToDoDatabase
 import com.example.todolist.api.RetrofitInstance
 
 object Repositories {
-
     private lateinit var applicationContext: Context
 
-    val localRepository: IToDoItemsRepository by lazy {
-        LocalToDoItemsRepository()
+    val toDoRepository: IToDoItemsRepository by lazy {
+        ToDoRepository()
     }
 
     val toDoDbRepository: IToDoItemsRepository by lazy{

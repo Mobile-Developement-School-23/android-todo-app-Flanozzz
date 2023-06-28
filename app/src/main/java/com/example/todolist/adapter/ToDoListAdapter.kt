@@ -11,9 +11,9 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todolist.IOnTaskTouchListener
-import com.example.todolist.Model.ToDoItem
+import com.example.todolist.models.ToDoItem
 import com.example.todolist.R
-import com.example.todolist.Utils.*
+import com.example.todolist.utils.*
 import com.example.todolist.databinding.TaskBinding
 
 class UserDiffCallBack(
@@ -100,22 +100,10 @@ class ToDoListAdapter(
 
     private fun showPopupMenuAction(view: View, position: Int, task: ToDoItem){
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menu.add(Menu.NONE, MOVE_UP, Menu.NONE, view.context.getString(R.string.MoveUp))
-            .apply { isEnabled = position > 0 }
-        popupMenu.menu.add(Menu.NONE, MOVE_DOWN, Menu.NONE, view.context.getString(R.string.MoveDown))
-            .apply { isEnabled = position < toDoList.size - 1 }
         popupMenu.menu.add(Menu.NONE, DELETE, Menu.NONE, view.context.getString(R.string.Delete))
 
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                 MOVE_UP -> {
-                     actionListener.onTaskMove(task, -1)
-                     true
-                }
-                MOVE_DOWN -> {
-                    actionListener.onTaskMove(task, 1)
-                    true
-                }
                 DELETE -> {
                     actionListener.onTaskDelete(task)
                     true
@@ -158,10 +146,8 @@ class ToDoListAdapter(
     }
 
     companion object{
-        const val MOVE_UP = 0
-        const val MOVE_DOWN = 1
-        const val DELETE = 2
-        const val DATE_OF_CREATE = 3
-        const val DATE_OF_CHANGE = 4
+        const val DELETE = 1
+        const val DATE_OF_CREATE = 2
+        const val DATE_OF_CHANGE = 3
     }
 }

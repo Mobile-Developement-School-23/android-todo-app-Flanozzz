@@ -1,6 +1,6 @@
-package com.example.todolist.Repository
+package com.example.todolist.repositories
 
-import com.example.todolist.Model.ToDoItem
+import com.example.todolist.models.ToDoItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
@@ -108,90 +108,90 @@ import java.util.*
 //    }
 //}
 
-class LocalToDoItemsRepository: IToDoItemsRepository {
+class LocalToDoItemsRepository {
 
-    private val toDoItemsFlow: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(items)
-
-    override suspend fun addNewItem(item: ToDoItem) {
-        val updatedItems = toDoItemsFlow.value.toMutableList()
-        updatedItems.add(item)
-        toDoItemsFlow.value = updatedItems
-    }
-
-//    override fun addToBegin(item: ToDoItem) {
+//    private val toDoItemsFlow: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(items)
+//
+//    override suspend fun addNewItem(item: ToDoItem) {
 //        val updatedItems = toDoItemsFlow.value.toMutableList()
-//        updatedItems.add(0, item)
+//        updatedItems.add(item)
 //        toDoItemsFlow.value = updatedItems
 //    }
-
-    override suspend fun getItems(): MutableStateFlow<List<ToDoItem>> = toDoItemsFlow
-
-    override suspend fun getById(id: String): ToDoItem? {
-        return toDoItemsFlow.value.find { it.id == id }
-    }
-
-    override suspend fun changeItem(task: ToDoItem) {
-        val updatedItems = toDoItemsFlow.value.toMutableList()
-        val index = getIndexById(task.id)
-        if (index != -1) {
-            updatedItems[index] = task
-            toDoItemsFlow.value = updatedItems
-        }
-    }
-
-    override suspend fun deleteItem(id: String) {
-        val updatedItems = toDoItemsFlow.value.toMutableList()
-        val index = getIndexById(id)
-        if (index != -1) {
-            updatedItems.removeAt(index)
-            toDoItemsFlow.value = updatedItems
-        }
-    }
-
-    override fun moveItem(task: ToDoItem, moveBy: Int) {
-        val oldIndex = getIndexById(task.id)
-        if(oldIndex == -1) return
-        val newIndex = oldIndex + moveBy
-        if(newIndex < 0 || newIndex >= items.size) return
-        val updatedItems = toDoItemsFlow.value.toMutableList()
-        Collections.swap(updatedItems, oldIndex, newIndex)
-        toDoItemsFlow.value = updatedItems
-    }
-
-//    override fun getCompletedTasksCount(): Int{
-//        var count = 0
-//        toDoItemsFlow.value.forEach {
-//            if(it.isDone) count++
-//        }
-//        return count
+//
+////    override fun addToBegin(item: ToDoItem) {
+////        val updatedItems = toDoItemsFlow.value.toMutableList()
+////        updatedItems.add(0, item)
+////        toDoItemsFlow.value = updatedItems
+////    }
+//
+//    override suspend fun getItems(): MutableStateFlow<List<ToDoItem>> = toDoItemsFlow
+//
+//    override suspend fun getById(id: String): ToDoItem? {
+//        return toDoItemsFlow.value.find { it.id == id }
 //    }
 //
-//    override fun getCompletedTasks(): ArrayList<ToDoItem> {
-//        return ArrayList(toDoItemsFlow.value.filter { it.isDone })
+//    override suspend fun changeItem(task: ToDoItem) {
+//        val updatedItems = toDoItemsFlow.value.toMutableList()
+//        val index = getIndexById(task.id)
+//        if (index != -1) {
+//            updatedItems[index] = task
+//            toDoItemsFlow.value = updatedItems
+//        }
 //    }
-
-    private fun getIndexById(id: String): Int{
-        return toDoItemsFlow.value.indexOfFirst { it.id == id }
-    }
-
-    companion object{
-        private val items = arrayListOf(
-            ToDoItem("1e", "Купить что-то1", ToDoItem.Importance.HIGH, 1691836648, false, null,0, 0, "d" )
-//            ToDoItem("2r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
-//            ToDoItem("3t", "Купить что-то, где-то, зачем-то, но зачем не очень понятно", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-//            ToDoItem("6y", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.DEFAULT, 1691836648, true, null, 0, 0),
-//            ToDoItem("7", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-//            ToDoItem("8", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.HIGH, 0, true, null, 0, 0),
-//            ToDoItem("9", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.LOW, 0, false, null,0, 0),
-//            ToDoItem("q", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
-//            ToDoItem("w", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
-//            ToDoItem("e", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
-//            ToDoItem("r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-//            ToDoItem("t", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
-//            ToDoItem("y", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
-//            ToDoItem("u", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
-//            ToDoItem("i", "Купить что-то", ToDoItem.Importance.LOW, 0, false, null, 0, 0),
-//            ToDoItem("o", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
-        )
-    }
+//
+//    override suspend fun deleteItem(id: String) {
+//        val updatedItems = toDoItemsFlow.value.toMutableList()
+//        val index = getIndexById(id)
+//        if (index != -1) {
+//            updatedItems.removeAt(index)
+//            toDoItemsFlow.value = updatedItems
+//        }
+//    }
+//
+//    override fun moveItem(task: ToDoItem, moveBy: Int) {
+//        val oldIndex = getIndexById(task.id)
+//        if(oldIndex == -1) return
+//        val newIndex = oldIndex + moveBy
+//        if(newIndex < 0 || newIndex >= items.size) return
+//        val updatedItems = toDoItemsFlow.value.toMutableList()
+//        Collections.swap(updatedItems, oldIndex, newIndex)
+//        toDoItemsFlow.value = updatedItems
+//    }
+//
+////    override fun getCompletedTasksCount(): Int{
+////        var count = 0
+////        toDoItemsFlow.value.forEach {
+////            if(it.isDone) count++
+////        }
+////        return count
+////    }
+////
+////    override fun getCompletedTasks(): ArrayList<ToDoItem> {
+////        return ArrayList(toDoItemsFlow.value.filter { it.isDone })
+////    }
+//
+//    private fun getIndexById(id: String): Int{
+//        return toDoItemsFlow.value.indexOfFirst { it.id == id }
+//    }
+//
+//    companion object{
+//        private val items = arrayListOf(
+//            ToDoItem("1e", "Купить что-то1", ToDoItem.Importance.HIGH, 1691836648, false, null,0, 0, "d" )
+////            ToDoItem("2r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
+////            ToDoItem("3t", "Купить что-то, где-то, зачем-то, но зачем не очень понятно", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+////            ToDoItem("6y", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.DEFAULT, 1691836648, true, null, 0, 0),
+////            ToDoItem("7", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+////            ToDoItem("8", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.HIGH, 0, true, null, 0, 0),
+////            ToDoItem("9", "Купить что-то, где-то, зачем-то, но зачем не очень понятно, но точно чтобы показать как обрррррррррррррррррррррррррр", ToDoItem.Importance.LOW, 0, false, null,0, 0),
+////            ToDoItem("q", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+////            ToDoItem("w", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null, 0, 0),
+////            ToDoItem("e", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
+////            ToDoItem("r", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+////            ToDoItem("t", "Купить что-то", ToDoItem.Importance.HIGH, 0, true, null,0, 0),
+////            ToDoItem("y", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, false, null,0, 0),
+////            ToDoItem("u", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+////            ToDoItem("i", "Купить что-то", ToDoItem.Importance.LOW, 0, false, null, 0, 0),
+////            ToDoItem("o", "Купить что-то", ToDoItem.Importance.DEFAULT, 0, true, null,0, 0),
+//        )
+//    }
 }

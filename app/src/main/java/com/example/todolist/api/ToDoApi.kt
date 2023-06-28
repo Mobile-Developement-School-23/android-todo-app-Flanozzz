@@ -1,9 +1,9 @@
 package com.example.todolist.api
 
-import com.example.todolist.Model.ElementRequest
-import com.example.todolist.Model.ElementResponse
-import com.example.todolist.Model.ListRequest
-import com.example.todolist.Model.ListResponse
+import com.example.todolist.models.ElementRequest
+import com.example.todolist.models.ElementResponse
+import com.example.todolist.models.ListRequest
+import com.example.todolist.models.ListResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

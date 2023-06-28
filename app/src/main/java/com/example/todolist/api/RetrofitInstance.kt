@@ -1,9 +1,9 @@
 package com.example.todolist.api
 
-import com.example.todolist.Model.ToDoItem
-import com.example.todolist.Utils.Constants.Companion.BASEURL
-import com.example.todolist.Utils.Constants.Companion.TOKEN
-import com.example.todolist.Utils.ImportanceConverter
+import com.example.todolist.models.ToDoItem
+import com.example.todolist.utils.Constants.Companion.BASEURL
+import com.example.todolist.utils.Constants.Companion.TOKEN
+import com.example.todolist.utils.ImportanceConverter
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

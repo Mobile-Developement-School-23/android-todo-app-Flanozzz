@@ -1,8 +1,9 @@
-package com.example.todolist.Repository
+package com.example.todolist.repositories
 
-import com.example.todolist.Model.ElementRequest
-import com.example.todolist.Model.ToDoItem
+import com.example.todolist.models.ElementRequest
+import com.example.todolist.models.ToDoItem
 import com.example.todolist.api.ToDoApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.lang.RuntimeException
 
@@ -26,18 +27,18 @@ class ToDoNetworkRepository(private val api: ToDoApi) : IToDoItemsRepository {
         }
     }
 
-    override suspend fun getItems(): MutableStateFlow<List<ToDoItem>> {
+    override suspend fun getItems(): Flow<List<ToDoItem>> {
         refreshItems()
         return _toDoItemsFlow
     }
 
     override suspend fun getById(id: String): ToDoItem? {
-        return _toDoItemsFlow.value.find { it.id == id }
+        TODO("Not yet implemented")
     }
 
-    override suspend fun changeItem(task: ToDoItem) {
+    override suspend fun changeItem(toDoItem: ToDoItem) {
         if (lastKnownRevision != null){
-            val response = api.updateElement(lastKnownRevision!!, ElementRequest(task), task.id)
+            val response = api.updateElement(lastKnownRevision!!, ElementRequest(toDoItem), toDoItem.id)
             if (response.isSuccessful) {
                 refreshItems()
             }
@@ -57,10 +58,6 @@ class ToDoNetworkRepository(private val api: ToDoApi) : IToDoItemsRepository {
                 throw RuntimeException("unsuccessful request")
             }
         }
-    }
-
-    override fun moveItem(task: ToDoItem, moveBy: Int) {
-        TODO("Not yet implemented")
     }
 
     private suspend fun refreshItems() {

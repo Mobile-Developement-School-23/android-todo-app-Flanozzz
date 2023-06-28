@@ -1,7 +1,7 @@
 package com.example.todolist
 
 import android.app.Application
-import com.example.todolist.Repository.Repositories
+import com.example.todolist.repositories.Repositories
 
 class App : Application() {
     //val toDoItemsRepository = LocalToDoItemsRepository()

@@ -1,10 +1,9 @@
 package com.example.todolist
 
-import com.example.todolist.Model.ToDoItem
+import com.example.todolist.models.ToDoItem
 
 interface IOnTaskTouchListener {
     fun onChangeButtonClick(id: String)
     fun onCheckboxClick(task: ToDoItem)
-    fun onTaskMove(task: ToDoItem, moveBy: Int)
     fun onTaskDelete(task: ToDoItem)
 }

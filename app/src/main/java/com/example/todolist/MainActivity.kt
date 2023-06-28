@@ -2,8 +2,8 @@ package com.example.todolist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.todolist.Model.ToDoItem
-import com.example.todolist.Utils.getDeviceId
+import com.example.todolist.models.ToDoItem
+import com.example.todolist.utils.getDeviceId
 import com.example.todolist.api.RetrofitInstance
 import com.example.todolist.api.ToDoApi
 import com.example.todolist.databinding.ActivityMainBinding

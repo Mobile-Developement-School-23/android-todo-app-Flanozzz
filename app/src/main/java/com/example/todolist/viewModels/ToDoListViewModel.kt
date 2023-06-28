@@ -1,12 +1,12 @@
-package com.example.todolist.ViewModel
+package com.example.todolist.viewModels
 
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todolist.Model.ToDoItem
-import com.example.todolist.Repository.Repositories
+import com.example.todolist.models.ToDoItem
+import com.example.todolist.repositories.Repositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -23,8 +23,9 @@ open class ToDoListViewModel : ViewModel() {
     private val _showOnlyUnfinishedStateLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     val showOnlyUnfinishedStateLiveData: LiveData<Boolean> = _showOnlyUnfinishedStateLiveData
 
-    private val repository = Repositories.toDoNetworkRepository
+    //private val repository = Repositories.toDoNetworkRepository
     //private val repository = Repositories.toDoDbRepository
+    private val repository = Repositories.toDoRepository
 
     private var collectJob: Job? = null
 
@@ -90,10 +91,6 @@ open class ToDoListViewModel : ViewModel() {
                 errorToast.show()
             }
         }
-    }
-
-    fun moveTask(task: ToDoItem, moveBy: Int){
-        repository.moveItem(task, moveBy)
     }
 
     fun deleteTask(task: ToDoItem){

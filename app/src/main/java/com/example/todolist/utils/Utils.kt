@@ -1,4 +1,4 @@
-package com.example.todolist.Utils
+package com.example.todolist.utils
 
 import android.annotation.SuppressLint
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.example.todolist.View
+package com.example.todolist.views
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -14,10 +14,10 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.adapter.ToDoListAdapter
 import com.example.todolist.IOnTaskTouchListener
-import com.example.todolist.Model.ToDoItem
+import com.example.todolist.models.ToDoItem
 import com.example.todolist.R
-import com.example.todolist.ViewModel.SelectedTaskViewModel
-import com.example.todolist.ViewModel.ToDoListViewModel
+import com.example.todolist.viewModels.SelectedTaskViewModel
+import com.example.todolist.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.deviceIdFactory
 
@@ -111,10 +111,6 @@ class ToDoListFragment : Fragment() {
             val newTask = task.copy(isDone = !task.isDone)
             val errorToast = Toast.makeText(requireContext(), "Не удалось получить данные, обновите список", Toast.LENGTH_SHORT)
             viewModel.changeTask(newTask, errorToast)
-        }
-
-        override fun onTaskMove(task: ToDoItem, moveBy: Int) {
-            viewModel.moveTask(task, moveBy)
         }
 
         override fun onTaskDelete(task: ToDoItem) {

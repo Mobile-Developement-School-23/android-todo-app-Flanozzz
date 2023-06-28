@@ -1,8 +1,8 @@
-package com.example.todolist.Model
+package com.example.todolist.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.todolist.Utils.getCurrentUnixTime
+import com.example.todolist.utils.getCurrentUnixTime
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
 

@@ -1,10 +1,11 @@
-package com.example.todolist.View
+package com.example.todolist.views
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
@@ -12,12 +13,14 @@ import android.widget.CompoundButton
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.todolist.Model.ToDoItem
+import androidx.lifecycle.lifecycleScope
+import com.example.todolist.models.ToDoItem
 import com.example.todolist.R
-import com.example.todolist.Utils.*
-import com.example.todolist.ViewModel.SelectedTaskViewModel
+import com.example.todolist.utils.*
+import com.example.todolist.viewModels.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
 import com.example.todolist.deviceIdFactory
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -26,25 +29,53 @@ class EditTaskFragment : Fragment() {
     private lateinit var binding: FragmentEditTaskBinding
     private val viewModel: SelectedTaskViewModel by activityViewModels{deviceIdFactory()}
 
+    private lateinit var importance: ToDoItem.Importance
+    private var deadline: Long? = null
+    private var text = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentEditTaskBinding.inflate(inflater, container, false)
 
-        setTaskView(viewModel.selectedTaskLiveData.value!!, viewModel.isNewTaskLiveData.value!!)
+        lifecycleScope.launch {
+            viewModel.selectedTaskFlow.collect{
+                Log.e("AAA", viewModel.isNewTask().toString())
+                setTaskView(it, viewModel.isNewTask())
+                importance = it.importance
+                deadline = it.deadline
+            }
+        }
+
+//        viewModel.selectedTaskLiveData.observe(viewLifecycleOwner){
+//            Log.e("AAA", "!")
+//            setTaskView(it, viewModel.isNewTask())
+//        }
 
         binding.cancelButton.setOnClickListener(canselButtonListener)
         binding.importanceTextView.setOnClickListener(importanceButtonListener)
         binding.dateSwitcher.setOnCheckedChangeListener(dateSwitcherListener)
         binding.pickDateButton.setOnClickListener(pickDateButtonListener)
         binding.cancelPickDateButton.setOnClickListener(cancelPickDateButtonListener)
-        binding.editTextField.addTextChangedListener(editTextFieldListener)
         binding.saveButton.setOnClickListener(saveButtonListener)
         binding.deleteButton.setOnClickListener(deleteButtonListener)
+        binding.editTextField.addTextChangedListener(textWatcher)
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.clearSelectedTask()
+    }
+
+    private val textWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun afterTextChanged(s: Editable?) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            text = s.toString()
+        }
     }
 
     private val canselButtonListener = OnClickListener{
@@ -56,7 +87,10 @@ class EditTaskFragment : Fragment() {
     }
 
     private val saveButtonListener = OnClickListener {
-        viewModel.saveTask()
+        //viewModel.setTaskImportance(importance)
+        //viewModel.setTaskDeadline(deadline)
+        //viewModel.setTaskText(text)
+        viewModel.saveTask(importance, deadline, binding.editTextField.text.toString())
         goBackToList()
     }
 
@@ -65,25 +99,11 @@ class EditTaskFragment : Fragment() {
         goBackToList()
     }
 
-    private val editTextFieldListener = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            viewModel.setTaskText(s.toString())
-        }
-
-        override fun afterTextChanged(s: Editable?) {
-
-        }
-    }
-
     private val pickDateButtonListener = OnClickListener {
         with(binding){
-            viewModel.setTaskDeadline(getUnixTime(datePicker.dayOfMonth, datePicker.month, datePicker.year))
+            deadline = getUnixTime(datePicker.dayOfMonth, datePicker.month, datePicker.year)
         }
-        setDeadlineTextView(viewModel.selectedTaskLiveData.value!!)
+        setDeadlineTextView(deadline)
         binding.datePickerContainer.visibility = View.GONE
         binding.disablePanel.visibility = View.GONE
     }
@@ -91,7 +111,7 @@ class EditTaskFragment : Fragment() {
     private val cancelPickDateButtonListener = OnClickListener {
         binding.disablePanel.visibility = View.GONE
         binding.datePickerContainer.visibility = View.GONE
-        setSwitcherView(viewModel.selectedTaskLiveData.value!!)
+        //setSwitcherView(viewModel.selectedTaskLiveData.value!!)
     }
 
     private val dateSwitcherListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -150,25 +170,30 @@ class EditTaskFragment : Fragment() {
     }
 
     private fun setDeleteButtonView(isNewTask: Boolean){
+        val color: Int
         if(isNewTask){
             binding.deleteButton.isEnabled = false
-            val disableColor = getAndroidAttrTextColor(requireContext(), android.R.attr.colorButtonNormal)
-            binding.deleteButton.setTextColor(disableColor)
-            binding.deleteButton.iconTint = ColorStateList.valueOf(disableColor)
+            color = getAndroidAttrTextColor(requireContext(), android.R.attr.colorButtonNormal)
 
         }
+        else{
+            binding.deleteButton.isEnabled = true
+            color = requireContext().getColor(R.color.red)
+        }
+        binding.deleteButton.setTextColor(color)
+        binding.deleteButton.iconTint = ColorStateList.valueOf(color)
     }
 
-    private fun setSwitcherView(task: ToDoItem){
+    private fun setSwitcherView(deadline: Long?){
         binding.dateSwitcher.setOnCheckedChangeListener(null)
-        binding.dateSwitcher.isChecked = task.deadline != null
+        binding.dateSwitcher.isChecked = deadline != null
         binding.dateSwitcher.setOnCheckedChangeListener(dateSwitcherListener)
     }
 
-    private fun setDeadlineTextView(task: ToDoItem){
-        if (task.deadline != null){
+    private fun setDeadlineTextView(deadline: Long?){
+        if (deadline != null){
             binding.deadlineDateTextView.visibility = View.VISIBLE
-            binding.deadlineDateTextView.text = getFormattedDate(task.deadline)
+            binding.deadlineDateTextView.text = getFormattedDate(deadline)
         }
         else{
             binding.deadlineDateTextView.visibility = View.INVISIBLE
@@ -179,8 +204,8 @@ class EditTaskFragment : Fragment() {
         binding.editTextField.setText(task.text)
     }
 
-    private fun setImportanceView(task: ToDoItem){
-        when(task.importance){
+    private fun setImportanceView(importance: ToDoItem.Importance){
+        when(importance){
             ToDoItem.Importance.DEFAULT -> binding.importanceStateTextView.text = getString(R.string.No)
             ToDoItem.Importance.LOW -> binding.importanceStateTextView.text = getString(R.string.Low)
             ToDoItem.Importance.HIGH -> binding.importanceStateTextView.text = getString(R.string.High)
@@ -189,15 +214,17 @@ class EditTaskFragment : Fragment() {
 
     private fun setTaskView(task: ToDoItem, isNewTask: Boolean){
         setEditFieldView(task)
-        setImportanceView(task)
-        setDeadlineTextView(task)
-        setSwitcherView(task)
+        setImportanceView(task.importance)
+        setDeadlineTextView(task.deadline)
+        setSwitcherView(task.deadline)
         setDeleteButtonView(isNewTask)
     }
 
     private fun changeTaskImportance(importance: ToDoItem.Importance){
-        viewModel.setTaskImportance(importance)
-        setImportanceView(viewModel.selectedTaskLiveData.value!!)
+        this.importance = importance
+        setImportanceView(importance)
+        //viewModel.setTaskImportance(importance)
+        //setImportanceView(viewModel.selectedTaskLiveData.value!!)
     }
 
     companion object{

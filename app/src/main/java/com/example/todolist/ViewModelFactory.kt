@@ -3,8 +3,8 @@ package com.example.todolist
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.todolist.Utils.getDeviceId
-import com.example.todolist.ViewModel.SelectedTaskViewModel
+import com.example.todolist.utils.getDeviceId
+import com.example.todolist.viewModels.SelectedTaskViewModel
 
 open class ViewModelFactory(
     private val deviceId: String
