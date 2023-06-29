@@ -6,6 +6,8 @@ import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
 import android.provider.Settings
+import android.widget.Toast
+import com.example.todolist.R
 import java.util.*
 
 
@@ -40,4 +42,8 @@ fun getCurrentUnixTime(): Long{
 @SuppressLint("HardwareIds")
 fun getDeviceId(context: Context): String {
     return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+}
+
+fun getRetryToast(context: Context): Toast {
+    return Toast.makeText(context, context.getString(R.string.retry), Toast.LENGTH_LONG)
 }

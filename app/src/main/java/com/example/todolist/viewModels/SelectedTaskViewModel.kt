@@ -1,6 +1,7 @@
 package com.example.todolist.viewModels
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.models.ToDoItem
@@ -18,7 +19,6 @@ class SelectedTaskViewModel(
     val selectedTaskFlow: Flow<ToDoItem> = _selectedTaskFlow
 
     private var isNewTask = false
-
     private val repository = Repositories.toDoRepository
 
     fun selectTask(id: String){
@@ -27,8 +27,7 @@ class SelectedTaskViewModel(
             withContext(Dispatchers.Main){
                 if(selectedToDoItem != null){
                     isNewTask = false
-                    Log.w("AAA", (_selectedTaskFlow.value == selectedToDoItem!!).toString())
-                    _selectedTaskFlow.value = selectedToDoItem!!
+                    _selectedTaskFlow.value = selectedToDoItem
                 }
                 else{
                     createTask()
@@ -51,10 +50,7 @@ class SelectedTaskViewModel(
     }
 
     fun removeTaskDeadline(){
-        val oldTask = _selectedTaskFlow.value
-        if(oldTask != null){
-            _selectedTaskFlow.value = oldTask.copy(deadline = null)
-        }
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(deadline = null)
     }
 
     fun saveTask(_importance: ToDoItem.Importance, _deadline: Long?, _text: String){

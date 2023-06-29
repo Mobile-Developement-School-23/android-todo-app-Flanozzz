@@ -1,9 +1,5 @@
 package com.example.todolist.api
 
-import com.example.todolist.models.ElementRequest
-import com.example.todolist.models.ElementResponse
-import com.example.todolist.models.ListRequest
-import com.example.todolist.models.ListResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,7 +15,7 @@ interface ToDoApi {
     suspend fun getList(): Response<ListResponse>
 
     @GET("list/{id}")
-    suspend fun getElement(@Path("id") id: String): Response<ElementRequest>
+    suspend fun getElement(@Path("id") id: String): Response<ElementResponse>
 
     @PATCH("list")
     suspend fun updateList(

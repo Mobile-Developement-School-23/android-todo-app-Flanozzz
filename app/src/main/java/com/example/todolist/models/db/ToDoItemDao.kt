@@ -1,19 +1,20 @@
-package com.example.todolist.models
+package com.example.todolist.models.db
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.example.todolist.models.ToDoItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface ToDoItemDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addToDoItem(toDoItem: ToDoItem)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addToDoItems(toDoItems: List<ToDoItem>)
 
     @Update
     suspend fun updateToDoItem(toDoItem: ToDoItem)

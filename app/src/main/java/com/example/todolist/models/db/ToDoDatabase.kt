@@ -1,9 +1,10 @@
-package com.example.todolist.models
+package com.example.todolist.models.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.todolist.models.ToDoItem
 
 @Database(entities = [ToDoItem::class], version = 2, exportSchema = false)
 abstract class ToDoDatabase: RoomDatabase() {
@@ -14,7 +15,7 @@ abstract class ToDoDatabase: RoomDatabase() {
         @Volatile
         private var INSTANCE: ToDoDatabase? = null
 
-        fun getDatabase(context: Context): ToDoDatabase{
+        fun getDatabase(context: Context): ToDoDatabase {
             val tempInstance = INSTANCE
             if(tempInstance != null){
                 return tempInstance

@@ -41,17 +41,11 @@ class EditTaskFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.selectedTaskFlow.collect{
-                Log.e("AAA", viewModel.isNewTask().toString())
                 setTaskView(it, viewModel.isNewTask())
                 importance = it.importance
                 deadline = it.deadline
             }
         }
-
-//        viewModel.selectedTaskLiveData.observe(viewLifecycleOwner){
-//            Log.e("AAA", "!")
-//            setTaskView(it, viewModel.isNewTask())
-//        }
 
         binding.cancelButton.setOnClickListener(canselButtonListener)
         binding.importanceTextView.setOnClickListener(importanceButtonListener)
@@ -87,9 +81,6 @@ class EditTaskFragment : Fragment() {
     }
 
     private val saveButtonListener = OnClickListener {
-        //viewModel.setTaskImportance(importance)
-        //viewModel.setTaskDeadline(deadline)
-        //viewModel.setTaskText(text)
         viewModel.saveTask(importance, deadline, binding.editTextField.text.toString())
         goBackToList()
     }
@@ -111,7 +102,6 @@ class EditTaskFragment : Fragment() {
     private val cancelPickDateButtonListener = OnClickListener {
         binding.disablePanel.visibility = View.GONE
         binding.datePickerContainer.visibility = View.GONE
-        //setSwitcherView(viewModel.selectedTaskLiveData.value!!)
     }
 
     private val dateSwitcherListener = CompoundButton.OnCheckedChangeListener { _, isChecked ->
@@ -144,9 +134,9 @@ class EditTaskFragment : Fragment() {
 
     private fun showImportancePopupMenu(view: View){
         val popupMenu = PopupMenu(view.context, view)
-        val item1 = popupMenu.menu.add(Menu.NONE, NO, Menu.NONE, view.context.getString(R.string.No))
-        val item2 = popupMenu.menu.add(Menu.NONE, LOW, Menu.NONE, view.context.getString(R.string.Low))
-        val item3 = popupMenu.menu.add(Menu.NONE, HIGH, Menu.NONE, view.context.getString(R.string.Importance))
+        popupMenu.menu.add(Menu.NONE, NO, Menu.NONE, view.context.getString(R.string.No))
+        popupMenu.menu.add(Menu.NONE, LOW, Menu.NONE, view.context.getString(R.string.Low))
+        popupMenu.menu.add(Menu.NONE, HIGH, Menu.NONE, view.context.getString(R.string.Importance))
 
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -223,8 +213,6 @@ class EditTaskFragment : Fragment() {
     private fun changeTaskImportance(importance: ToDoItem.Importance){
         this.importance = importance
         setImportanceView(importance)
-        //viewModel.setTaskImportance(importance)
-        //setImportanceView(viewModel.selectedTaskLiveData.value!!)
     }
 
     companion object{

@@ -1,4 +1,6 @@
-package com.example.todolist.models
+package com.example.todolist.api
+
+import com.example.todolist.models.ToDoItem
 
 //data class ListElement(
 //    val id: String,

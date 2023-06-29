@@ -2,6 +2,7 @@ package com.example.todolist.views
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolist.adapter.ToDoListAdapter
@@ -20,11 +22,14 @@ import com.example.todolist.viewModels.SelectedTaskViewModel
 import com.example.todolist.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.deviceIdFactory
+import com.example.todolist.utils.getRetryToast
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class ToDoListFragment : Fragment() {
 
     private val dataModel: SelectedTaskViewModel by activityViewModels{deviceIdFactory()}
-    private val viewModel: ToDoListViewModel by viewModels()
+    private val viewModel: ToDoListViewModel by activityViewModels()
     private lateinit var adapter: ToDoListAdapter
     private lateinit var binding: FragmentToDoListBinding
 
@@ -49,25 +54,34 @@ class ToDoListFragment : Fragment() {
         binding.toDoListRecycleView.adapter = adapter
         binding.toDoListRecycleView.isNestedScrollingEnabled = false
 
-        viewModel.viewableTasks.observe(viewLifecycleOwner){ list ->
-            val completedCount = list.filter { it.isDone }.size
-            val totalCount = list.size
-            setNumberOfCompletedTasksText(completedCount, totalCount)
-            binding.toDoListRecycleView.post{
-                adapter.toDoList = list
+        lifecycleScope.launch {
+            viewModel.viewableTasks.collect{ list ->
+                val completedCount = list.filter { it.isDone }.size
+                val totalCount = list.size
+                setNumberOfCompletedTasksText(completedCount, totalCount)
+                binding.toDoListRecycleView.post{
+                    adapter.toDoList = list
+                }
             }
         }
 
-        viewModel.showOnlyUnfinishedStateLiveData.observe(viewLifecycleOwner){
-            viewModel.setViewableTasksByState(it)
-            setEyeIcon(it)
+        lifecycleScope.launch {
+            viewModel.showOnlyUnfinishedStateLiveData.collect{
+                viewModel.setViewableTasksByState(it)
+                setEyeIcon(it)
+            }
         }
 
         binding.addTaskButton.setOnClickListener(addTaskButtonListener)
         binding.eyeButton.setOnClickListener(eyeButtonListener)
 
-        viewModel.restartCollectCoroutine()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.e("AAA", "fragment")
+        viewModel.restartCollectCoroutine()
     }
 
     override fun onDestroyView() {
@@ -109,17 +123,11 @@ class ToDoListFragment : Fragment() {
 
         override fun onCheckboxClick(task: ToDoItem) {
             val newTask = task.copy(isDone = !task.isDone)
-            val errorToast = Toast.makeText(requireContext(), "Не удалось получить данные, обновите список", Toast.LENGTH_SHORT)
-            viewModel.changeTask(newTask, errorToast)
+            viewModel.changeTask(newTask, getRetryToast(requireContext()))
         }
 
         override fun onTaskDelete(task: ToDoItem) {
-            viewModel.deleteTask(task)
+            viewModel.deleteTask(task, getRetryToast(requireContext()))
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //viewModel.saveTasks()
     }
 }

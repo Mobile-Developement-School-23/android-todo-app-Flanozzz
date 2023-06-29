@@ -33,4 +33,7 @@
     <string name="date_of_create">Дата создания</string>
     <string name="date_of_change">Дата изменения</string>
     <string name="deadline">Дедлайн</string>
+
+
+    <string name="retry">Обнаружены новые данные. Пожалуйста обновите список</string>
 </resources>
