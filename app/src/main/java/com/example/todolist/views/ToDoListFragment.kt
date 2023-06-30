@@ -1,6 +1,9 @@
 package com.example.todolist.views
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,12 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.todolist.adapter.ToDoListAdapter
 import com.example.todolist.IOnTaskTouchListener
 import com.example.todolist.models.ToDoItem
@@ -22,8 +26,10 @@ import com.example.todolist.viewModels.SelectedTaskViewModel
 import com.example.todolist.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.deviceIdFactory
+import com.example.todolist.repositories.ToDoRepository
+import com.example.todolist.utils.getCurrentUnixTime
 import com.example.todolist.utils.getRetryToast
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ToDoListFragment : Fragment() {
@@ -39,8 +45,36 @@ class ToDoListFragment : Fragment() {
     ): View {
         binding = FragmentToDoListBinding.inflate(inflater, container, false)
 
-        adapter = ToDoListAdapter(actionListener)
+        setRecycleViewAdapter()
+        launchViewableTasksCollect()
+        launchShowOnlyUnfinishedCollect()
+        setListeners()
+        registerNetworkCallback()
 
+        return binding.root
+    }
+
+    private fun registerNetworkCallback(){
+        val connectivityCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                viewModel.syncData()
+            }
+            override fun onLost(network: Network) {}
+        }
+
+        val connectivityManager = requireContext()
+            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager.registerDefaultNetworkCallback(connectivityCallback)
+    }
+
+    private fun setListeners(){
+        binding.addTaskButton.setOnClickListener(addTaskButtonListener)
+        binding.eyeButton.setOnClickListener(eyeButtonListener)
+        binding.swipeRefreshLayout.setOnRefreshListener(onRefreshListener)
+    }
+
+    private fun setRecycleViewAdapter(){
+        adapter = ToDoListAdapter(actionListener)
         val layoutManager = object : LinearLayoutManager(requireContext()){
             override fun canScrollVertically(): Boolean {
                 return false
@@ -53,9 +87,20 @@ class ToDoListFragment : Fragment() {
         binding.toDoListRecycleView.layoutManager = layoutManager
         binding.toDoListRecycleView.adapter = adapter
         binding.toDoListRecycleView.isNestedScrollingEnabled = false
+    }
 
+    private fun launchShowOnlyUnfinishedCollect(){
         lifecycleScope.launch {
-            viewModel.viewableTasks.collect{ list ->
+            viewModel.showOnlyUnfinishedStateFlow.collect{
+                viewModel.setViewableTasksByState(it)
+                setEyeIcon(it)
+            }
+        }
+    }
+
+    private fun launchViewableTasksCollect(){
+        lifecycleScope.launch {
+            viewModel.viewableTasksStateFlow.collect{ list ->
                 val completedCount = list.filter { it.isDone }.size
                 val totalCount = list.size
                 setNumberOfCompletedTasksText(completedCount, totalCount)
@@ -64,29 +109,11 @@ class ToDoListFragment : Fragment() {
                 }
             }
         }
-
-        lifecycleScope.launch {
-            viewModel.showOnlyUnfinishedStateLiveData.collect{
-                viewModel.setViewableTasksByState(it)
-                setEyeIcon(it)
-            }
-        }
-
-        binding.addTaskButton.setOnClickListener(addTaskButtonListener)
-        binding.eyeButton.setOnClickListener(eyeButtonListener)
-
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("AAA", "fragment")
-        viewModel.restartCollectCoroutine()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.cancelCollectCoroutine()
+        viewModel.startCollectCoroutine()
     }
 
     @SuppressLint("SetTextI18n")
@@ -102,6 +129,13 @@ class ToDoListFragment : Fragment() {
             R.drawable.visibility
         }
         binding.eyeButton.setImageResource(iconRes)
+    }
+
+    private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            viewModel.syncData()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private val eyeButtonListener = OnClickListener {
@@ -122,7 +156,7 @@ class ToDoListFragment : Fragment() {
         }
 
         override fun onCheckboxClick(task: ToDoItem) {
-            val newTask = task.copy(isDone = !task.isDone)
+            val newTask = task.copy(isDone = !task.isDone, dateOfChange = getCurrentUnixTime())
             viewModel.changeTask(newTask, getRetryToast(requireContext()))
         }
 

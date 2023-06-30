@@ -19,18 +19,25 @@ class ToDoRepository {
         val localData: List<ToDoItem> = toDoDbRepository.getItems().first()
         val data = mutableListOf<ToDoItem>()
         val map = mutableMapOf<String, ToDoItem>()
-        for (item in localData) {
-            map[item.id] = item
+
+        localData.forEach { map[it.id] = it }
+        remotedData.forEach {
+            if(map.containsKey(it.id)){
+                val localDateOfChange = map[it.id]!!.dateOfChange
+                val remotedDateOfChange = it.dateOfChange
+                if (localDateOfChange < remotedDateOfChange) map[it.id] = it
+            } else {
+                map[it.id] = it
+            }
         }
-        for (item in remotedData) {
-            map[item.id] = item
-        }
+
+
         data.addAll(map.values)
         toDoDbRepository.addNewItems(data)
         toDoNetworkRepository.updateItems(data)
     }
 
-    suspend fun addNewItem(item: ToDoItem): Boolean {
+    suspend fun addNewItem(item: ToDoItem): ToDoNetworkRepository.RequestStatus {
         toDoDbRepository.addNewItem(item)
         return toDoNetworkRepository.addNewItem(item)
     }
@@ -43,12 +50,12 @@ class ToDoRepository {
         return result
     }
 
-    suspend fun changeItem(toDoItem: ToDoItem): Boolean {
+    suspend fun changeItem(toDoItem: ToDoItem): ToDoNetworkRepository.RequestStatus {
         toDoDbRepository.changeItem(toDoItem)
         return toDoNetworkRepository.changeItem(toDoItem)
     }
 
-    suspend fun deleteItem(id: String): Boolean {
+    suspend fun deleteItem(id: String): ToDoNetworkRepository.RequestStatus {
         toDoDbRepository.deleteItem(id)
         return toDoNetworkRepository.deleteItem(id)
     }

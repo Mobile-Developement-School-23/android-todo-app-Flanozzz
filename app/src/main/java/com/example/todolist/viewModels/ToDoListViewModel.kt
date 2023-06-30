@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.models.ToDoItem
 import com.example.todolist.repositories.Repositories
+import com.example.todolist.repositories.ToDoNetworkRepository
+import com.example.todolist.repositories.ToDoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -18,27 +20,23 @@ import kotlinx.coroutines.withContext
 open class ToDoListViewModel : ViewModel() {
     private var toDoItems: List<ToDoItem> = emptyList()
 
-    private val _viewableTasks: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(toDoItems)
-    val viewableTasks: Flow<List<ToDoItem>> = _viewableTasks
+    private val _viewableTasksStateFlow: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(toDoItems)
+    val viewableTasksStateFlow: Flow<List<ToDoItem>> = _viewableTasksStateFlow
 
-    private val _showOnlyUnfinishedStateLiveData: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val showOnlyUnfinishedStateLiveData: Flow<Boolean> = _showOnlyUnfinishedStateLiveData
+    private val _showOnlyUnfinishedStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showOnlyUnfinishedStateFlow: Flow<Boolean> = _showOnlyUnfinishedStateFlow
 
     private val repository = Repositories.toDoRepository
 
-    private var collectJob: Job? = null
-
-    private fun startCollectCoroutine() {
-        Log.w("AAA", "start collect")
+    fun startCollectCoroutine() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getItems().collect { list ->
                 withContext(Dispatchers.Main) {
-                    Log.w("AAA", "collect")
                     toDoItems = list
-                    if (_showOnlyUnfinishedStateLiveData.value) {
-                        _viewableTasks.value = list.filter { !it.isDone }
+                    if (_showOnlyUnfinishedStateFlow.value) {
+                        _viewableTasksStateFlow.value = list.filter { !it.isDone }
                     } else {
-                        _viewableTasks.value = list
+                        _viewableTasksStateFlow.value = list
                     }
                 }
             }
@@ -47,45 +45,34 @@ open class ToDoListViewModel : ViewModel() {
 
     fun syncData(){
         viewModelScope.launch(Dispatchers.IO) {
-            Log.w("AAA", "syncData")
             repository.syncData()
         }
     }
 
-    fun restartCollectCoroutine() {
-        collectJob?.cancel()
-        startCollectCoroutine()
-    }
-
-    fun cancelCollectCoroutine() {
-        collectJob?.cancel()
-        collectJob = null
-    }
-
     fun changeShowOnlyUnfinishedState(){
-        _showOnlyUnfinishedStateLiveData.value = !_showOnlyUnfinishedStateLiveData.value!!
+        _showOnlyUnfinishedStateFlow.value = !_showOnlyUnfinishedStateFlow.value
     }
 
     fun setViewableTasksByState(state: Boolean){
         if(state){
-            _viewableTasks.value = toDoItems.filter { !it.isDone }
+            _viewableTasksStateFlow.value = toDoItems.filter { !it.isDone }
         }
         else {
-            _viewableTasks.value = toDoItems
+            _viewableTasksStateFlow.value = toDoItems
         }
     }
 
     fun changeTask(task: ToDoItem, errToast: Toast){
         viewModelScope.launch(Dispatchers.IO) {
-            val success = repository.changeItem(task)
-            if (!success) errToast.show()
+            val status = repository.changeItem(task)
+            if (status == ToDoNetworkRepository.RequestStatus.SynchronizeError) errToast.show()
         }
     }
 
     fun deleteTask(task: ToDoItem, errToast: Toast){
         viewModelScope.launch(Dispatchers.IO) {
-            val success = repository.deleteItem(task.id)
-            if (!success) errToast.show()
+            val status = repository.deleteItem(task.id)
+            if (status == ToDoNetworkRepository.RequestStatus.SynchronizeError) errToast.show()
         }
     }
 }

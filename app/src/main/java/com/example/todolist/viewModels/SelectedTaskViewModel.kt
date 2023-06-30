@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.models.ToDoItem
 import com.example.todolist.repositories.Repositories
+import com.example.todolist.repositories.ToDoNetworkRepository
+import com.example.todolist.utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,29 +52,31 @@ class SelectedTaskViewModel(
     }
 
     fun removeTaskDeadline(){
-        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(deadline = null)
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(deadline = null, dateOfChange = getCurrentUnixTime())
     }
 
-    fun saveTask(_importance: ToDoItem.Importance, _deadline: Long?, _text: String){
+    fun saveTask(_importance: ToDoItem.Importance, _deadline: Long?, _text: String, errToast: Toast){
         val newToDoItem = _selectedTaskFlow.value.copy(
             importance = _importance,
             deadline = _deadline,
-            text = _text
+            text = _text,
+            dateOfChange = getCurrentUnixTime()
         )
         viewModelScope.launch(Dispatchers.IO) {
-            if(isNewTask){
+            val status = if(isNewTask){
                 repository.addNewItem(newToDoItem)
-            }
-            else{
+            } else{
                 repository.changeItem(newToDoItem)
             }
+            if (status == ToDoNetworkRepository.RequestStatus.SynchronizeError) errToast.show()
         }
     }
 
-    fun deleteTask(){
+    fun deleteTask(errToast: Toast){
         viewModelScope.launch(Dispatchers.IO) {
             if (!isNewTask) {
-                repository.deleteItem(_selectedTaskFlow.value.id)
+                val status = repository.deleteItem(_selectedTaskFlow.value.id)
+                if (status == ToDoNetworkRepository.RequestStatus.SynchronizeError) errToast.show()
             }
         }
     }

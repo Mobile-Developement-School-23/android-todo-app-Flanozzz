@@ -81,12 +81,12 @@ class EditTaskFragment : Fragment() {
     }
 
     private val saveButtonListener = OnClickListener {
-        viewModel.saveTask(importance, deadline, binding.editTextField.text.toString())
+        viewModel.saveTask(importance, deadline, binding.editTextField.text.toString(), getRetryToast(requireContext()))
         goBackToList()
     }
 
     private val deleteButtonListener = OnClickListener {
-        viewModel.deleteTask()
+        viewModel.deleteTask(getRetryToast(requireContext()))
         goBackToList()
     }
 

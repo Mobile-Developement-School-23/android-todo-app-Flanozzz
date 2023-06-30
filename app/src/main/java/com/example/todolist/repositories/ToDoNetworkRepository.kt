@@ -17,24 +17,36 @@ class ToDoNetworkRepository(private val api: ToDoApi) {
     private val _toDoItemsFlow: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(emptyList())
     private var lastKnownRevision = illegalRevision
 
-    suspend fun addNewItem(item: ToDoItem) : Boolean {
-        val elementRequest = ElementRequest(item)
-        if(lastKnownRevision == illegalRevision) refreshItems()
-        var response = api.addElement(lastKnownRevision, elementRequest)
-        if (response.isSuccessful) {
-            refreshItems()
+    suspend fun addNewItem(item: ToDoItem) : RequestStatus {
+        try {
+            val elementRequest = ElementRequest(item)
+            if(lastKnownRevision == illegalRevision) refreshItems()
+            val response = api.addElement(lastKnownRevision, elementRequest)
+            if (response.isSuccessful) {
+                refreshItems()
+            }
+            return if (response.isSuccessful) RequestStatus.Success else RequestStatus.SynchronizeError
         }
-        return response.isSuccessful
+        catch (e: Exception){
+            Log.e("exceptions", e.message.toString())
+            return RequestStatus.NetworkError
+        }
     }
 
-    suspend fun updateItems(items: List<ToDoItem>): Boolean{
-        val listRequest = ListRequest(items)
-        if(lastKnownRevision == illegalRevision) refreshItems()
-        var response = api.updateList(lastKnownRevision!!, listRequest)
-        if(response.isSuccessful){
-            refreshItems()
+    suspend fun updateItems(items: List<ToDoItem>): RequestStatus{
+        try {
+            val listRequest = ListRequest(items)
+            if(lastKnownRevision == illegalRevision) refreshItems()
+            val response = api.updateList(lastKnownRevision!!, listRequest)
+            if(response.isSuccessful){
+                refreshItems()
+            }
+            return if (response.isSuccessful) RequestStatus.Success else RequestStatus.SynchronizeError
         }
-        return response.isSuccessful
+        catch (e: Exception){
+            Log.e("exceptions", e.message.toString())
+            return RequestStatus.NetworkError
+        }
     }
 
     suspend fun getItems(): MutableStateFlow<List<ToDoItem>> {
@@ -43,40 +55,69 @@ class ToDoNetworkRepository(private val api: ToDoApi) {
     }
 
     suspend fun getById(id: String): ToDoItem? {
-        val response = api.getElement(id)
-        lastKnownRevision = response.body()?.revision ?: illegalRevision
-        return if (response.isSuccessful) {
-            response.body()?.element
-        } else {
-            null
+        try {
+            val response = api.getElement(id)
+            lastKnownRevision = response.body()?.revision ?: illegalRevision
+            return if (response.isSuccessful) {
+                response.body()?.element
+            } else {
+                null
+            }
+        }
+        catch (e: Exception){
+            Log.e("exceptions", e.message.toString())
+            return null
         }
     }
 
-    suspend fun changeItem(toDoItem: ToDoItem): Boolean {
-        if (lastKnownRevision == illegalRevision) refreshItems()
-        var response = api.updateElement(lastKnownRevision, ElementRequest(toDoItem), toDoItem.id)
-        if(response.isSuccessful){
-            refreshItems()
+    suspend fun changeItem(toDoItem: ToDoItem): RequestStatus {
+        try {
+            if (lastKnownRevision == illegalRevision) refreshItems()
+            val response = api.updateElement(lastKnownRevision, ElementRequest(toDoItem), toDoItem.id)
+            if(response.isSuccessful){
+                refreshItems()
+            }
+            return if (response.isSuccessful) RequestStatus.Success else RequestStatus.SynchronizeError
         }
-        return response.isSuccessful
+        catch (e: Exception){
+            Log.e("exceptions", e.message.toString())
+            return RequestStatus.NetworkError
+        }
     }
 
-    suspend fun deleteItem(id: String): Boolean {
-        if (lastKnownRevision == illegalRevision) refreshItems()
-        var response = api.deleteElement(lastKnownRevision, id)
-        if (response.isSuccessful) {
-            refreshItems()
+    suspend fun deleteItem(id: String): RequestStatus {
+        try {
+            if (lastKnownRevision == illegalRevision) refreshItems()
+            val response = api.deleteElement(lastKnownRevision, id)
+            if (response.isSuccessful) {
+                refreshItems()
+            }
+            return if (response.isSuccessful) RequestStatus.Success else RequestStatus.SynchronizeError
         }
-        return response.isSuccessful
+        catch (e: Exception){
+            Log.e("exceptions", e.message.toString())
+            return RequestStatus.NetworkError
+        }
     }
 
     private suspend fun refreshItems() {
-        val response = api.getList()
-        if (response.isSuccessful) {
-            lastKnownRevision = response.body()?.revision ?: illegalRevision
-            val items = response.body()?.list ?: emptyList()
-            _toDoItemsFlow.value = items
+        try {
+            val response = api.getList()
+            if (response.isSuccessful) {
+                lastKnownRevision = response.body()?.revision ?: illegalRevision
+                val items = response.body()?.list ?: emptyList()
+                _toDoItemsFlow.value = items
+            }
         }
+        catch (e: Exception){
+            Log.e("exceptions", e.message.toString())
+        }
+    }
+
+    enum class RequestStatus{
+        NetworkError,
+        SynchronizeError,
+        Success
     }
 
     companion object{
