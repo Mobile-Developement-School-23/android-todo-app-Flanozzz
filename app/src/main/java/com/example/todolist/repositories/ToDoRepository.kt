@@ -31,7 +31,6 @@ class ToDoRepository {
             }
         }
 
-
         data.addAll(map.values)
         toDoDbRepository.addNewItems(data)
         toDoNetworkRepository.updateItems(data)

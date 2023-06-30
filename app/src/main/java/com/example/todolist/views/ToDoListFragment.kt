@@ -49,22 +49,8 @@ class ToDoListFragment : Fragment() {
         launchViewableTasksCollect()
         launchShowOnlyUnfinishedCollect()
         setListeners()
-        registerNetworkCallback()
 
         return binding.root
-    }
-
-    private fun registerNetworkCallback(){
-        val connectivityCallback = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                viewModel.syncData()
-            }
-            override fun onLost(network: Network) {}
-        }
-
-        val connectivityManager = requireContext()
-            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.registerDefaultNetworkCallback(connectivityCallback)
     }
 
     private fun setListeners(){
@@ -105,6 +91,7 @@ class ToDoListFragment : Fragment() {
                 val totalCount = list.size
                 setNumberOfCompletedTasksText(completedCount, totalCount)
                 binding.toDoListRecycleView.post{
+                    Log.w("AAA", list.toString())
                     adapter.toDoList = list
                 }
             }

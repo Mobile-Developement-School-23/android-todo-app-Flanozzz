@@ -45,6 +45,7 @@ open class ToDoListViewModel : ViewModel() {
 
     fun syncData(){
         viewModelScope.launch(Dispatchers.IO) {
+            Log.w("AAA", "sync")
             repository.syncData()
         }
     }
