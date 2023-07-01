@@ -35,4 +35,5 @@
     <string name="deadline">Дедлайн</string>
 
     <string name="retry">Ошибка синхронизации данных, пожалуйста обновите список</string>
+    <string name="refresh">Обновить</string>
 </resources>

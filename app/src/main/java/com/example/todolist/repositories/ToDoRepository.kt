@@ -1,21 +1,16 @@
 package com.example.todolist.repositories
 
-import android.util.Log
 import com.example.todolist.models.ToDoItem
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.single
-import java.net.NetPermission
 
 class ToDoRepository {
 
     private val toDoDbRepository = Repositories.toDoDbRepository
     private val toDoNetworkRepository = Repositories.toDoNetworkRepository
 
-    suspend fun syncData(){
-        val remotedData = toDoNetworkRepository.getItems().value
+    suspend fun syncData(): ToDoNetworkRepository.ResponseStatus{
+        val remotedData = toDoNetworkRepository.getItems()
         val localData: List<ToDoItem> = toDoDbRepository.getItems().first()
         val data = mutableListOf<ToDoItem>()
         val map = mutableMapOf<String, ToDoItem>()
@@ -33,10 +28,10 @@ class ToDoRepository {
 
         data.addAll(map.values)
         toDoDbRepository.addNewItems(data)
-        toDoNetworkRepository.updateItems(data)
+        return toDoNetworkRepository.updateItems(data)
     }
 
-    suspend fun addNewItem(item: ToDoItem): ToDoNetworkRepository.RequestStatus {
+    suspend fun addNewItem(item: ToDoItem): ToDoNetworkRepository.ResponseStatus {
         toDoDbRepository.addNewItem(item)
         return toDoNetworkRepository.addNewItem(item)
     }
@@ -49,12 +44,12 @@ class ToDoRepository {
         return result
     }
 
-    suspend fun changeItem(toDoItem: ToDoItem): ToDoNetworkRepository.RequestStatus {
+    suspend fun changeItem(toDoItem: ToDoItem): ToDoNetworkRepository.ResponseStatus {
         toDoDbRepository.changeItem(toDoItem)
         return toDoNetworkRepository.changeItem(toDoItem)
     }
 
-    suspend fun deleteItem(id: String): ToDoNetworkRepository.RequestStatus {
+    suspend fun deleteItem(id: String): ToDoNetworkRepository.ResponseStatus {
         toDoDbRepository.deleteItem(id)
         return toDoNetworkRepository.deleteItem(id)
     }

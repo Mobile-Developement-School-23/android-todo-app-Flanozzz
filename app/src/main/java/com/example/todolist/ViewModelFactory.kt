@@ -1,5 +1,6 @@
 package com.example.todolist
 
+import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -24,4 +25,8 @@ open class ViewModelFactory(
 
 fun Fragment.deviceIdFactory() = ViewModelFactory(
     deviceId = getDeviceId(requireContext())
+)
+
+fun Activity.deviceIdFactory() = ViewModelFactory(
+    deviceId = getDeviceId(this)
 )

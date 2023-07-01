@@ -1,9 +1,6 @@
 package com.example.todolist.views
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -26,9 +22,9 @@ import com.example.todolist.viewModels.SelectedTaskViewModel
 import com.example.todolist.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
 import com.example.todolist.deviceIdFactory
-import com.example.todolist.repositories.ToDoRepository
+import com.example.todolist.repositories.ToDoNetworkRepository
 import com.example.todolist.utils.getCurrentUnixTime
-import com.example.todolist.utils.getRetryToast
+import com.example.todolist.utils.makeRefreshSnackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -49,7 +45,6 @@ class ToDoListFragment : Fragment() {
         launchViewableTasksCollect()
         launchShowOnlyUnfinishedCollect()
         setListeners()
-
         return binding.root
     }
 
@@ -100,7 +95,6 @@ class ToDoListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.startCollectCoroutine()
     }
 
     @SuppressLint("SetTextI18n")
@@ -144,11 +138,11 @@ class ToDoListFragment : Fragment() {
 
         override fun onCheckboxClick(task: ToDoItem) {
             val newTask = task.copy(isDone = !task.isDone, dateOfChange = getCurrentUnixTime())
-            viewModel.changeTask(newTask, getRetryToast(requireContext()))
+            viewModel.changeTask(newTask)
         }
 
         override fun onTaskDelete(task: ToDoItem) {
-            viewModel.deleteTask(task, getRetryToast(requireContext()))
+            viewModel.deleteTask(task)
         }
     }
 }

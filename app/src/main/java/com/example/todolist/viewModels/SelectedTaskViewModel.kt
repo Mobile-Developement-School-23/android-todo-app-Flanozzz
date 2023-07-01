@@ -1,6 +1,5 @@
 package com.example.todolist.viewModels
 
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +21,10 @@ class SelectedTaskViewModel(
 
     private var isNewTask = false
     private val repository = Repositories.toDoRepository
+
+    private val _repositoryRequestStatus: MutableStateFlow<ToDoNetworkRepository.ResponseStatus> =
+        MutableStateFlow(ToDoNetworkRepository.ResponseStatus.Successful)
+    val repositoryRequestStatus: Flow<ToDoNetworkRepository.ResponseStatus> = _repositoryRequestStatus
 
     fun selectTask(id: String){
         viewModelScope.launch(Dispatchers.IO) {
@@ -55,7 +58,7 @@ class SelectedTaskViewModel(
         _selectedTaskFlow.value = _selectedTaskFlow.value.copy(deadline = null, dateOfChange = getCurrentUnixTime())
     }
 
-    fun saveTask(_importance: ToDoItem.Importance, _deadline: Long?, _text: String, errToast: Toast){
+    fun saveTask(_importance: ToDoItem.Importance, _deadline: Long?, _text: String){
         val newToDoItem = _selectedTaskFlow.value.copy(
             importance = _importance,
             deadline = _deadline,
@@ -63,20 +66,18 @@ class SelectedTaskViewModel(
             dateOfChange = getCurrentUnixTime()
         )
         viewModelScope.launch(Dispatchers.IO) {
-            val status = if(isNewTask){
+            _repositoryRequestStatus.value = if(isNewTask){
                 repository.addNewItem(newToDoItem)
             } else{
                 repository.changeItem(newToDoItem)
             }
-            if (status == ToDoNetworkRepository.RequestStatus.SynchronizeError) errToast.show()
         }
     }
 
-    fun deleteTask(errToast: Toast){
+    fun deleteTask(){
         viewModelScope.launch(Dispatchers.IO) {
             if (!isNewTask) {
-                val status = repository.deleteItem(_selectedTaskFlow.value.id)
-                if (status == ToDoNetworkRepository.RequestStatus.SynchronizeError) errToast.show()
+                _repositoryRequestStatus.value = repository.deleteItem(_selectedTaskFlow.value.id)
             }
         }
     }

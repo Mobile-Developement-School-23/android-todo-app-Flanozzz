@@ -5,7 +5,6 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.view.View.OnClickListener
 import android.view.inputmethod.InputMethodManager
@@ -20,6 +19,8 @@ import com.example.todolist.utils.*
 import com.example.todolist.viewModels.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
 import com.example.todolist.deviceIdFactory
+import com.example.todolist.repositories.ToDoNetworkRepository
+import com.example.todolist.viewModels.ToDoListViewModel
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -27,7 +28,7 @@ import java.util.*
 class EditTaskFragment : Fragment() {
 
     private lateinit var binding: FragmentEditTaskBinding
-    private val viewModel: SelectedTaskViewModel by activityViewModels{deviceIdFactory()}
+    private val selectedTaskViewModel: SelectedTaskViewModel by activityViewModels{deviceIdFactory()}
 
     private lateinit var importance: ToDoItem.Importance
     private var deadline: Long? = null
@@ -40,8 +41,8 @@ class EditTaskFragment : Fragment() {
         binding = FragmentEditTaskBinding.inflate(inflater, container, false)
 
         lifecycleScope.launch {
-            viewModel.selectedTaskFlow.collect{
-                setTaskView(it, viewModel.isNewTask())
+            selectedTaskViewModel.selectedTaskFlow.collect{
+                setTaskView(it, selectedTaskViewModel.isNewTask())
                 importance = it.importance
                 deadline = it.deadline
             }
@@ -61,7 +62,7 @@ class EditTaskFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.clearSelectedTask()
+        selectedTaskViewModel.clearSelectedTask()
     }
 
     private val textWatcher = object : TextWatcher {
@@ -81,12 +82,12 @@ class EditTaskFragment : Fragment() {
     }
 
     private val saveButtonListener = OnClickListener {
-        viewModel.saveTask(importance, deadline, binding.editTextField.text.toString(), getRetryToast(requireContext()))
+        selectedTaskViewModel.saveTask(importance, deadline, binding.editTextField.text.toString())
         goBackToList()
     }
 
     private val deleteButtonListener = OnClickListener {
-        viewModel.deleteTask(getRetryToast(requireContext()))
+        selectedTaskViewModel.deleteTask()
         goBackToList()
     }
 
@@ -124,7 +125,7 @@ class EditTaskFragment : Fragment() {
         }
         else {
             binding.deadlineDateTextView.visibility = View.INVISIBLE
-            viewModel.removeTaskDeadline()
+            selectedTaskViewModel.removeTaskDeadline()
         }
     }
 

@@ -5,37 +5,63 @@ import android.net.ConnectivityManager
 import android.net.Network
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
-import androidx.fragment.app.activityViewModels
-import com.example.todolist.models.ToDoItem
-import com.example.todolist.utils.getDeviceId
-import com.example.todolist.api.RetrofitInstance
-import com.example.todolist.api.ToDoApi
+import androidx.lifecycle.lifecycleScope
 import com.example.todolist.databinding.ActivityMainBinding
+import com.example.todolist.repositories.ToDoNetworkRepository
+import com.example.todolist.utils.makeRefreshSnackbar
+import com.example.todolist.viewModels.SelectedTaskViewModel
 import com.example.todolist.viewModels.ToDoListViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: ToDoListViewModel by viewModels()
+    private val toDoListViewModel: ToDoListViewModel by viewModels()
+    private val selectedTaskViewModel: SelectedTaskViewModel by viewModels{deviceIdFactory()}
     private lateinit var connectivityCallback: ConnectivityManager.NetworkCallback
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        viewModel.syncData()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        toDoListViewModel.syncData()
         registerNetworkCallback()
 
+        startObserveByRequestStatus()
+
         setContentView(binding.root)
+    }
+
+    private fun startObserveByRequestStatus(){
+        // Это выглядит не очень, исправлю в домашке по архитектуре)
+        lifecycleScope.launch {
+            toDoListViewModel.repositoryRequestStatus.collect{
+                if(it == ToDoNetworkRepository.ResponseStatus.Unsuccessful){
+                    try {
+                        val snackbar = makeRefreshSnackbar(binding.root){toDoListViewModel.syncData()}
+                        snackbar.show()
+                    }
+                    catch (_: Exception){}
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            selectedTaskViewModel.repositoryRequestStatus.collect{
+                if(it == ToDoNetworkRepository.ResponseStatus.Unsuccessful){
+                    try {
+                        val snackbar = makeRefreshSnackbar(binding.root){toDoListViewModel.syncData()}
+                        snackbar.show()
+                    }
+                    catch (_: Exception){}
+                }
+            }
+        }
     }
 
     private fun registerNetworkCallback(){
         connectivityCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                viewModel.syncData()
+                toDoListViewModel.syncData()
             }
             override fun onLost(network: Network) {}
         }
@@ -43,6 +69,8 @@ class MainActivity : AppCompatActivity() {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         connectivityManager.registerDefaultNetworkCallback(connectivityCallback)
     }
+
+
 
     private fun unregisterNetworkCallback() {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
