@@ -5,6 +5,7 @@ import com.example.todolist.api.ElementRequest
 import com.example.todolist.api.ListRequest
 import com.example.todolist.models.ToDoItem
 import com.example.todolist.api.ToDoApi
+import com.example.todolist.utils.Constants.Companion.BAD_REQUEST_CODE
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import retrofit2.Response
@@ -114,7 +115,7 @@ class ToDoNetworkRepository(private val api: ToDoApi) {
 
         do {
             response = apiRequest()
-            //if (response.code() == ResponseStatus.BadRequest.value) break
+            if (response.code() == BAD_REQUEST_CODE) break
             if(response.isSuccessful){
                 break
             }

@@ -24,11 +24,11 @@ class DataSyncWorker(context: Context, workerParams: WorkerParameters) :
     companion object {
         fun startPeriodicWork(context: Context) {
             val constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED) // Условие: требуется подключение к интернету
+                .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
             val syncDataRequest = PeriodicWorkRequestBuilder<DataSyncWorker>(
-                repeatInterval = 8, // Интервал выполнения работы (в часах)
+                repeatInterval = 8,
                 repeatIntervalTimeUnit = TimeUnit.HOURS
             )
                 .setConstraints(constraints)
