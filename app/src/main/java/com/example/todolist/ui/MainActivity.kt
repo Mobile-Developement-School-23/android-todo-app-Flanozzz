@@ -1,4 +1,4 @@
-package com.example.todolist
+package com.example.todolist.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -8,10 +8,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.todolist.databinding.ActivityMainBinding
-import com.example.todolist.repositories.ToDoNetworkRepository
+import com.example.todolist.data.source.NetworkSource
+import com.example.todolist.ui.viewModels.deviceIdFactory
 import com.example.todolist.utils.makeRefreshSnackbar
-import com.example.todolist.viewModels.SelectedTaskViewModel
-import com.example.todolist.viewModels.ToDoListViewModel
+import com.example.todolist.ui.viewModels.SelectedTaskViewModel
+import com.example.todolist.ui.viewModels.ToDoListViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         // Это выглядит не очень, исправлю в домашке по архитектуре)
         lifecycleScope.launch {
             toDoListViewModel.repositoryRequestStatus.collect{
-                if(it == ToDoNetworkRepository.ResponseStatus.Unsuccessful){
+                if(it == NetworkSource.ResponseStatus.Unsuccessful){
                     try {
                         val snackbar = makeRefreshSnackbar(binding.root){toDoListViewModel.syncData()}
                         snackbar.show()
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             selectedTaskViewModel.repositoryRequestStatus.collect{
-                if(it == ToDoNetworkRepository.ResponseStatus.Unsuccessful){
+                if(it == NetworkSource.ResponseStatus.Unsuccessful){
                     try {
                         val snackbar = makeRefreshSnackbar(binding.root){toDoListViewModel.syncData()}
                         snackbar.show()

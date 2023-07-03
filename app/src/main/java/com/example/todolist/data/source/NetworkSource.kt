@@ -1,17 +1,16 @@
-package com.example.todolist.repositories
+package com.example.todolist.data.source
 
 import android.util.Log
-import com.example.todolist.api.ElementRequest
-import com.example.todolist.api.ListRequest
-import com.example.todolist.models.ToDoItem
-import com.example.todolist.api.ToDoApi
+import com.example.todolist.data.model.ElementRequest
+import com.example.todolist.data.model.ListRequest
+import com.example.todolist.data.model.ToDoItem
+import com.example.todolist.data.api.ToDoApi
 import com.example.todolist.utils.Constants.Companion.BAD_REQUEST_CODE
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import retrofit2.Response
 
 
-class ToDoNetworkRepository(private val api: ToDoApi) {
+class NetworkSource(private val api: ToDoApi) {
 
     private var toDoItems: List<ToDoItem> = emptyList()
     private var lastKnownRevision = illegalRevision
@@ -30,7 +29,7 @@ class ToDoNetworkRepository(private val api: ToDoApi) {
         }
     }
 
-    suspend fun updateItems(items: List<ToDoItem>): ResponseStatus{
+    suspend fun updateItems(items: List<ToDoItem>): ResponseStatus {
         try {
             val listRequest = ListRequest(items)
             if (lastKnownRevision == illegalRevision) refreshItems()
@@ -83,7 +82,7 @@ class ToDoNetworkRepository(private val api: ToDoApi) {
         }
     }
 
-    suspend fun deleteItem(id: String): ResponseStatus{
+    suspend fun deleteItem(id: String): ResponseStatus {
         try {
             val response = makeRequest { api.deleteElement(lastKnownRevision, id) }
             if(response.isSuccessful) refreshItems()

@@ -1,5 +1,9 @@
-package com.example.todolist.api
+package com.example.todolist.data.api
 
+import com.example.todolist.data.model.ElementRequest
+import com.example.todolist.data.model.ElementResponse
+import com.example.todolist.data.model.ListRequest
+import com.example.todolist.data.model.ListResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

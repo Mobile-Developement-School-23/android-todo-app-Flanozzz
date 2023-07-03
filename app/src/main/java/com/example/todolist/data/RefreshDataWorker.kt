@@ -1,16 +1,13 @@
-package com.example.todolist.utils
+package com.example.todolist.data
 
 import android.content.Context
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.example.todolist.repositories.Repositories
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.example.todolist.di.Repositories
 import java.util.concurrent.TimeUnit
 
 class DataSyncWorker(context: Context, workerParams: WorkerParameters) :

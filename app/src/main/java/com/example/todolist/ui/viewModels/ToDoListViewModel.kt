@@ -1,12 +1,10 @@
-package com.example.todolist.viewModels
+package com.example.todolist.ui.viewModels
 
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todolist.models.ToDoItem
-import com.example.todolist.repositories.Repositories
-import com.example.todolist.repositories.ToDoNetworkRepository
-import com.google.android.material.snackbar.Snackbar
+import com.example.todolist.data.model.ToDoItem
+import com.example.todolist.di.Repositories
+import com.example.todolist.data.source.NetworkSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,9 +22,9 @@ open class ToDoListViewModel : ViewModel() {
     private val _showOnlyUnfinishedStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showOnlyUnfinishedStateFlow: Flow<Boolean> = _showOnlyUnfinishedStateFlow
 
-    private val _repositoryRequestStatus: MutableStateFlow<ToDoNetworkRepository.ResponseStatus> =
-        MutableStateFlow(ToDoNetworkRepository.ResponseStatus.Successful)
-    val repositoryRequestStatus: Flow<ToDoNetworkRepository.ResponseStatus> = _repositoryRequestStatus
+    private val _repositoryRequestStatus: MutableStateFlow<NetworkSource.ResponseStatus> =
+        MutableStateFlow(NetworkSource.ResponseStatus.Successful)
+    val repositoryRequestStatus: Flow<NetworkSource.ResponseStatus> = _repositoryRequestStatus
 
     private val repository = Repositories.toDoRepository
 

@@ -15,9 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList"
         tools:targetApi="31"
-        android:name=".App">
+        android:name=".ToDoApp">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

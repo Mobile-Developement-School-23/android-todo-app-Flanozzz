@@ -1,6 +1,6 @@
-package com.example.todolist
+package com.example.todolist.ui.adapter
 
-import com.example.todolist.models.ToDoItem
+import com.example.todolist.data.model.ToDoItem
 
 interface IOnTaskTouchListener {
     fun onChangeButtonClick(id: String)

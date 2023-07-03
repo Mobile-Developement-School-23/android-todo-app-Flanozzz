@@ -1,11 +1,11 @@
-package com.example.todolist.models.db
+package com.example.todolist.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.todolist.models.ToDoItem
+import com.example.todolist.data.model.ToDoItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -1,6 +1,6 @@
 package com.example.todolist.utils
 
-import com.example.todolist.models.ToDoItem
+import com.example.todolist.data.model.ToDoItem
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement

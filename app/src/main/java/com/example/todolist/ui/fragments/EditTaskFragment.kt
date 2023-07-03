@@ -1,4 +1,4 @@
-package com.example.todolist.views
+package com.example.todolist.ui.fragments
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -13,14 +13,12 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.todolist.models.ToDoItem
+import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.R
 import com.example.todolist.utils.*
-import com.example.todolist.viewModels.SelectedTaskViewModel
+import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
-import com.example.todolist.deviceIdFactory
-import com.example.todolist.repositories.ToDoNetworkRepository
-import com.example.todolist.viewModels.ToDoListViewModel
+import com.example.todolist.ui.viewModels.deviceIdFactory
 import kotlinx.coroutines.launch
 import java.util.*
 

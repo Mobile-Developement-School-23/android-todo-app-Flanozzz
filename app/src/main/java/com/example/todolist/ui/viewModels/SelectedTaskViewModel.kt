@@ -1,11 +1,10 @@
-package com.example.todolist.viewModels
+package com.example.todolist.ui.viewModels
 
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todolist.models.ToDoItem
-import com.example.todolist.repositories.Repositories
-import com.example.todolist.repositories.ToDoNetworkRepository
+import com.example.todolist.data.model.ToDoItem
+import com.example.todolist.di.Repositories
+import com.example.todolist.data.source.NetworkSource
 import com.example.todolist.utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -22,9 +21,9 @@ class SelectedTaskViewModel(
     private var isNewTask = false
     private val repository = Repositories.toDoRepository
 
-    private val _repositoryRequestStatus: MutableStateFlow<ToDoNetworkRepository.ResponseStatus> =
-        MutableStateFlow(ToDoNetworkRepository.ResponseStatus.Successful)
-    val repositoryRequestStatus: Flow<ToDoNetworkRepository.ResponseStatus> = _repositoryRequestStatus
+    private val _repositoryRequestStatus: MutableStateFlow<NetworkSource.ResponseStatus> =
+        MutableStateFlow(NetworkSource.ResponseStatus.Successful)
+    val repositoryRequestStatus: Flow<NetworkSource.ResponseStatus> = _repositoryRequestStatus
 
     fun selectTask(id: String){
         viewModelScope.launch(Dispatchers.IO) {

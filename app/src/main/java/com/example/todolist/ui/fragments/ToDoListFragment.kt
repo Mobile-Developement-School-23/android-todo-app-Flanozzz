@@ -1,4 +1,4 @@
-package com.example.todolist.views
+package com.example.todolist.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -14,17 +14,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.todolist.adapter.ToDoListAdapter
-import com.example.todolist.IOnTaskTouchListener
-import com.example.todolist.models.ToDoItem
+import com.example.todolist.ui.adapter.ToDoListAdapter
+import com.example.todolist.ui.adapter.IOnTaskTouchListener
+import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.R
-import com.example.todolist.viewModels.SelectedTaskViewModel
-import com.example.todolist.viewModels.ToDoListViewModel
+import com.example.todolist.ui.viewModels.SelectedTaskViewModel
+import com.example.todolist.ui.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
-import com.example.todolist.deviceIdFactory
-import com.example.todolist.repositories.ToDoNetworkRepository
+import com.example.todolist.ui.viewModels.deviceIdFactory
 import com.example.todolist.utils.getCurrentUnixTime
-import com.example.todolist.utils.makeRefreshSnackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

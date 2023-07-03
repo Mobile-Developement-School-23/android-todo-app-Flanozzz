@@ -1,4 +1,4 @@
-package com.example.todolist.adapter
+package com.example.todolist.ui.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater
@@ -10,8 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.todolist.IOnTaskTouchListener
-import com.example.todolist.models.ToDoItem
+import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.R
 import com.example.todolist.utils.*
 import com.example.todolist.databinding.TaskBinding
