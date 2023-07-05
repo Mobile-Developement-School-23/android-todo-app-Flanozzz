@@ -3,8 +3,9 @@ package com.example.todolist.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.ToDoItem
-import com.example.todolist.di.Repositories
-import com.example.todolist.data.source.NetworkSource
+import com.example.todolist.data.repository.IRepository
+import com.example.todolist.data.repository.ToDoRepository
+import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -13,17 +14,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SelectedTaskViewModel(
-    private val deviceId: String
+    private val deviceId: String,
+    private val repository: IRepository
 ) : ViewModel() {
     private var _selectedTaskFlow = MutableStateFlow(ToDoItem.getDefaultTask(deviceId))
     val selectedTaskFlow: Flow<ToDoItem> = _selectedTaskFlow
 
     private var isNewTask = false
-    private val repository = Repositories.toDoRepository
-
-    private val _repositoryRequestStatus: MutableStateFlow<NetworkSource.ResponseStatus> =
-        MutableStateFlow(NetworkSource.ResponseStatus.Successful)
-    val repositoryRequestStatus: Flow<NetworkSource.ResponseStatus> = _repositoryRequestStatus
 
     fun selectTask(id: String){
         viewModelScope.launch(Dispatchers.IO) {
@@ -40,10 +37,6 @@ class SelectedTaskViewModel(
         }
     }
 
-    fun clearSelectedTask(){
-        _selectedTaskFlow.value = ToDoItem.getDefaultTask(deviceId)
-    }
-
     fun createTask(){
         isNewTask = true
         _selectedTaskFlow.value = ToDoItem.getDefaultTask(deviceId)
@@ -53,31 +46,13 @@ class SelectedTaskViewModel(
         return isNewTask
     }
 
-    fun removeTaskDeadline(){
-        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(deadline = null, dateOfChange = getCurrentUnixTime())
-    }
-
-    fun saveTask(_importance: ToDoItem.Importance, _deadline: Long?, _text: String){
-        val newToDoItem = _selectedTaskFlow.value.copy(
-            importance = _importance,
-            deadline = _deadline,
-            text = _text,
-            dateOfChange = getCurrentUnixTime()
+    fun setNewData(newImportance: ToDoItem.Importance, newDeadline: Long?, newText: String){
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
+            text = newText,
+            deadline = newDeadline,
+            importance = newImportance,
+            dateOfChange = getCurrentUnixTime(),
+            lastUpdatedBy = deviceId,
         )
-        viewModelScope.launch(Dispatchers.IO) {
-            _repositoryRequestStatus.value = if(isNewTask){
-                repository.addNewItem(newToDoItem)
-            } else{
-                repository.changeItem(newToDoItem)
-            }
-        }
-    }
-
-    fun deleteTask(){
-        viewModelScope.launch(Dispatchers.IO) {
-            if (!isNewTask) {
-                _repositoryRequestStatus.value = repository.deleteItem(_selectedTaskFlow.value.id)
-            }
-        }
     }
 }

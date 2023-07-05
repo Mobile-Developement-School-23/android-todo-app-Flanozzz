@@ -3,8 +3,10 @@ package com.example.todolist.ui.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.ToDoItem
-import com.example.todolist.di.Repositories
-import com.example.todolist.data.source.NetworkSource
+import com.example.todolist.data.repository.IRepository
+import com.example.todolist.data.repository.ToDoRepository
+import com.example.todolist.data.source.network.NetworkSource
+import com.example.todolist.data.source.network.UnsuccessfulResponseException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,21 +14,21 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
+open class ToDoListViewModel(
+    private val repository: IRepository
+) : ViewModel() {
+    private var _toDoItems: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(emptyList())
+    val toDoItems: Flow<List<ToDoItem>> = _toDoItems
 
-open class ToDoListViewModel : ViewModel() {
-    private var toDoItems: List<ToDoItem> = emptyList()
-
-    private val _viewableTasksStateFlow: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(toDoItems)
+    private val _viewableTasksStateFlow: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(_toDoItems.value)
     val viewableTasksStateFlow: Flow<List<ToDoItem>> = _viewableTasksStateFlow
 
     private val _showOnlyUnfinishedStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showOnlyUnfinishedStateFlow: Flow<Boolean> = _showOnlyUnfinishedStateFlow
 
-    private val _repositoryRequestStatus: MutableStateFlow<NetworkSource.ResponseStatus> =
-        MutableStateFlow(NetworkSource.ResponseStatus.Successful)
-    val repositoryRequestStatus: Flow<NetworkSource.ResponseStatus> = _repositoryRequestStatus
+    private val _isLastResponseSuccess: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isLastResponseSuccess: Flow<Boolean> = _isLastResponseSuccess
 
-    private val repository = Repositories.toDoRepository
 
     init {
         startCollectCoroutine()
@@ -36,7 +38,7 @@ open class ToDoListViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getItems().collect { list ->
                 withContext(Dispatchers.Main) {
-                    toDoItems = list
+                    _toDoItems.value = list
                     if (_showOnlyUnfinishedStateFlow.value) {
                         _viewableTasksStateFlow.value = list.filter { !it.isDone }
                     } else {
@@ -49,7 +51,9 @@ open class ToDoListViewModel : ViewModel() {
 
     fun syncData(){
         viewModelScope.launch(Dispatchers.IO) {
-            _repositoryRequestStatus.value = repository.syncData()
+            performActionAndSetStatus {
+                repository.syncData()
+            }
         }
     }
 
@@ -59,22 +63,47 @@ open class ToDoListViewModel : ViewModel() {
 
     fun setViewableTasksByState(state: Boolean){
         if(state){
-            _viewableTasksStateFlow.value = toDoItems.filter { !it.isDone }
+            _viewableTasksStateFlow.value = _toDoItems.value.filter { !it.isDone }
         }
         else {
-            _viewableTasksStateFlow.value = toDoItems
+            _viewableTasksStateFlow.value = _toDoItems.value
         }
     }
 
     fun changeTask(task: ToDoItem){
         viewModelScope.launch(Dispatchers.IO) {
-            _repositoryRequestStatus.value = repository.changeItem(task)
+            performActionAndSetStatus {
+                repository.changeItem(task)
+            }
         }
     }
 
     fun deleteTask(task: ToDoItem){
         viewModelScope.launch(Dispatchers.IO) {
-            _repositoryRequestStatus.value = repository.deleteItem(task.id)
+            performActionAndSetStatus {
+                repository.deleteItem(task.id)
+            }
+        }
+    }
+
+    fun saveToDoItem(newToDoItem: ToDoItem, isNewTask: Boolean){
+        viewModelScope.launch(Dispatchers.IO) {
+            performActionAndSetStatus {
+                if(isNewTask){
+                    repository.addNewItem(newToDoItem)
+                } else{
+                    repository.changeItem(newToDoItem)
+                }
+            }
+        }
+    }
+
+    private suspend fun performActionAndSetStatus(action: suspend () -> Unit) {
+        try {
+            action()
+            _isLastResponseSuccess.value = true
+        } catch (e: UnsuccessfulResponseException) {
+            _isLastResponseSuccess.value = false
         }
     }
 }

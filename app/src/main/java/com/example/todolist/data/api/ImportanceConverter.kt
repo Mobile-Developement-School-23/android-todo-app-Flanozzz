@@ -1,4 +1,4 @@
-package com.example.todolist.utils
+package com.example.todolist.data.api
 
 import com.example.todolist.data.model.ToDoItem
 import com.google.gson.JsonDeserializationContext

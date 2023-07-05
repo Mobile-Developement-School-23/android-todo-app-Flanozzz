@@ -15,35 +15,13 @@ import com.example.todolist.R
 import com.example.todolist.utils.*
 import com.example.todolist.databinding.TaskBinding
 
-class UserDiffCallBack(
-    private val oldList: List<ToDoItem>,
-    private val newList: List<ToDoItem>
-) : DiffUtil.Callback(){
-    override fun getOldListSize(): Int = oldList.size
-
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-        return oldItem == newItem
-    }
-
-}
-
 class ToDoListAdapter(
     private val actionListener: IOnTaskTouchListener
 ) : RecyclerView.Adapter<ToDoListAdapter.ToDoItemViewHolder>(){
 
     var toDoList: List<ToDoItem> = emptyList()
     set(value) {
-        val diffCallBack = UserDiffCallBack(field, value)
+        val diffCallBack = ToDoListDiffCallBack(field, value)
         val diffResult = DiffUtil.calculateDiff(diffCallBack)
         field = value
         diffResult.dispatchUpdatesTo(this)
@@ -66,7 +44,10 @@ class ToDoListAdapter(
         holder.binding.taskInfoCheckBox.isChecked = toDoItem.isDone
         setStrikeThruTextFlag(toDoItem.isDone, holder.binding.taskInfoTextView)
         setImportanceIcon(toDoItem.importance, holder.binding.importanceIcon)
+        setListeners(holder, toDoItem, position)
+    }
 
+    private fun setListeners(holder: ToDoItemViewHolder, toDoItem: ToDoItem, position: Int){
         with(holder.binding){
             taskInfoContainer.setOnClickListener{
                 actionListener.onChangeButtonClick(toDoItem.id)
@@ -91,8 +72,7 @@ class ToDoListAdapter(
     private fun setStrikeThruTextFlag(state: Boolean, textView: TextView){
         if(state){
             textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-        else{
+        } else {
             textView.paintFlags = textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
         }
     }

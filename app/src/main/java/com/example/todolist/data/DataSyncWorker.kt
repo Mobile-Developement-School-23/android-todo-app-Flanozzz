@@ -7,14 +7,18 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.example.todolist.di.Repositories
+import com.example.todolist.data.repository.ToDoRepository
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class DataSyncWorker(context: Context, workerParams: WorkerParameters) :
+class DataSyncWorker @Inject constructor(
+    context: Context,
+    workerParams: WorkerParameters
+) :
     CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        Repositories.toDoRepository.syncData()
+        //repository.syncData()
         return Result.success()
     }
 

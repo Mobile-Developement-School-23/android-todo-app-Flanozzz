@@ -1,48 +1,48 @@
-package com.example.todolist.data.source
+package com.example.todolist.data.source.network
 
 import android.util.Log
 import com.example.todolist.data.model.ElementRequest
 import com.example.todolist.data.model.ListRequest
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.api.ToDoApi
+import com.example.todolist.data.model.ElementResponse
+import com.example.todolist.data.model.ListResponse
 import com.example.todolist.utils.Constants.Companion.BAD_REQUEST_CODE
 import kotlinx.coroutines.delay
 import retrofit2.Response
+import javax.inject.Inject
 
 
-class NetworkSource(private val api: ToDoApi) {
+class NetworkSource @Inject constructor(private val api: ToDoApi) {
 
     private var toDoItems: List<ToDoItem> = emptyList()
     private var lastKnownRevision = illegalRevision
 
-    suspend fun addNewItem(item: ToDoItem) : ResponseStatus {
+    suspend fun addNewItem(item: ToDoItem) {
+        var response: Response<ElementResponse>? = null
         try {
             val elementRequest = ElementRequest(item)
             if(lastKnownRevision == illegalRevision) refreshItems()
-            val response = makeRequest { api.addElement(lastKnownRevision, elementRequest) }
+            response = makeRequest { api.addElement(lastKnownRevision, elementRequest) }
             if (response.isSuccessful) refreshItems()
-            return if(response.isSuccessful) ResponseStatus.Successful else ResponseStatus.Unsuccessful
         }
-        catch (e: Exception){
-            Log.e("exceptions", e.message.toString())
-            return ResponseStatus.NetworkError
+        catch (_: Exception){}
+        if(response != null && !response.isSuccessful){
+            throw UnsuccessfulResponseException("Unsuccessful response")
         }
     }
 
-    suspend fun updateItems(items: List<ToDoItem>): ResponseStatus {
+    suspend fun updateItems(items: List<ToDoItem>) {
+        var response: Response<ListResponse>? = null
         try {
             val listRequest = ListRequest(items)
             if (lastKnownRevision == illegalRevision) refreshItems()
-            val response = makeRequest { api.updateList(lastKnownRevision, listRequest) }
+            response = makeRequest { api.updateList(lastKnownRevision, listRequest) }
             if(response.isSuccessful) refreshItems()
-            if(response.isSuccessful){
-                refreshItems()
-            }
-            return if(response.isSuccessful) ResponseStatus.Successful else ResponseStatus.Unsuccessful
         }
-        catch (e: Exception){
-            Log.e("exceptions", e.message.toString())
-            return ResponseStatus.NetworkError
+        catch (_: Exception){}
+        if(response != null && !response.isSuccessful){
+            throw UnsuccessfulResponseException("Unsuccessful response")
         }
     }
 
@@ -67,30 +67,30 @@ class NetworkSource(private val api: ToDoApi) {
         }
     }
 
-    suspend fun changeItem(toDoItem: ToDoItem): ResponseStatus {
+    suspend fun changeItem(toDoItem: ToDoItem) {
+        var response: Response<ElementRequest>? = null
         try {
             if (lastKnownRevision == illegalRevision) refreshItems()
-            val response = makeRequest {
+            response = makeRequest {
                 api.updateElement(lastKnownRevision, ElementRequest(toDoItem), toDoItem.id)
             }
             if(response.isSuccessful) refreshItems()
-            return if(response.isSuccessful) ResponseStatus.Successful else ResponseStatus.Unsuccessful
         }
-        catch (e: Exception){
-            Log.e("exceptions", e.message.toString())
-            return ResponseStatus.NetworkError
+        catch (_: Exception){}
+        if(response != null && !response.isSuccessful){
+            throw UnsuccessfulResponseException("Unsuccessful response")
         }
     }
 
-    suspend fun deleteItem(id: String): ResponseStatus {
+    suspend fun deleteItem(id: String) {
+        var response: Response<ElementRequest>? = null
         try {
-            val response = makeRequest { api.deleteElement(lastKnownRevision, id) }
+            response = makeRequest { api.deleteElement(lastKnownRevision, id) }
             if(response.isSuccessful) refreshItems()
-            return if(response.isSuccessful) ResponseStatus.Successful else ResponseStatus.Unsuccessful
         }
-        catch (e: Exception){
-            Log.e("exceptions", e.message.toString())
-            return ResponseStatus.NetworkError
+        catch (_: Exception){}
+        if(response != null && !response.isSuccessful){
+            throw UnsuccessfulResponseException("Unsuccessful response")
         }
     }
 
@@ -103,9 +103,7 @@ class NetworkSource(private val api: ToDoApi) {
                 toDoItems = items
             }
         }
-        catch (e: Exception){
-            Log.e("exceptions", e.message.toString())
-        }
+        catch (_: Exception){}
     }
 
     private suspend fun <T> makeRequest(apiRequest: suspend () -> Response<T>): Response<T>{
@@ -125,11 +123,11 @@ class NetworkSource(private val api: ToDoApi) {
         return response
     }
 
-    enum class ResponseStatus(){
-        NetworkError,
-        Successful,
-        Unsuccessful,
-    }
+//    enum class ResponseStatus(){
+//        NetworkError,
+//        Successful,
+//        Unsuccessful,
+//    }
 
     companion object{
         const val illegalRevision = -1

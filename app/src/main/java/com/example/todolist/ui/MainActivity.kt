@@ -7,48 +7,41 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.todolist.ToDoApp
 import com.example.todolist.databinding.ActivityMainBinding
-import com.example.todolist.data.source.NetworkSource
-import com.example.todolist.ui.viewModels.deviceIdFactory
+import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.utils.makeRefreshSnackbar
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.viewModels.ToDoListViewModel
+import com.example.todolist.ui.viewModels.ViewModelFactory
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    private val toDoListViewModel: ToDoListViewModel by viewModels()
-    private val selectedTaskViewModel: SelectedTaskViewModel by viewModels{deviceIdFactory()}
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val toDoListViewModel: ToDoListViewModel by viewModels {viewModelFactory}
     private lateinit var connectivityCallback: ConnectivityManager.NetworkCallback
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        (applicationContext as ToDoApp).appComponent.inject(this)
+
         toDoListViewModel.syncData()
         registerNetworkCallback()
-
         startObserveByRequestStatus()
 
         setContentView(binding.root)
     }
 
     private fun startObserveByRequestStatus(){
-        // Это выглядит не очень, исправлю в домашке по архитектуре)
         lifecycleScope.launch {
-            toDoListViewModel.repositoryRequestStatus.collect{
-                if(it == NetworkSource.ResponseStatus.Unsuccessful){
-                    try {
-                        val snackbar = makeRefreshSnackbar(binding.root){toDoListViewModel.syncData()}
-                        snackbar.show()
-                    }
-                    catch (_: Exception){}
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            selectedTaskViewModel.repositoryRequestStatus.collect{
-                if(it == NetworkSource.ResponseStatus.Unsuccessful){
+            toDoListViewModel.isLastResponseSuccess.collect{ isSuccess ->
+                if(!isSuccess){
                     try {
                         val snackbar = makeRefreshSnackbar(binding.root){toDoListViewModel.syncData()}
                         snackbar.show()

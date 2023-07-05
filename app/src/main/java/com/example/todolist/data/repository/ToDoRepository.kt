@@ -1,17 +1,18 @@
 package com.example.todolist.data.repository
 
-import com.example.todolist.data.source.NetworkSource
+import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.data.model.ToDoItem
-import com.example.todolist.di.Repositories
+import com.example.todolist.data.source.LocalDbSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
-class ToDoRepository {
+class ToDoRepository @Inject constructor(
+    private val dbSource: LocalDbSource,
+    private val networkSource: NetworkSource
+) : IRepository {
 
-    private val dbSource = Repositories.toDoDbRepository
-    private val networkSource = Repositories.toDoNetworkRepository
-
-    suspend fun syncData(): NetworkSource.ResponseStatus{
+    override suspend fun syncData(){
         val remotedData = networkSource.getItems()
         val localData: List<ToDoItem> = dbSource.getItems().first()
         val data = mutableListOf<ToDoItem>()
@@ -30,29 +31,29 @@ class ToDoRepository {
 
         data.addAll(map.values)
         dbSource.addNewItems(data)
-        return networkSource.updateItems(data)
+        networkSource.updateItems(data)
     }
 
-    suspend fun addNewItem(item: ToDoItem): NetworkSource.ResponseStatus {
+    override suspend fun addNewItem(item: ToDoItem) {
         dbSource.addNewItem(item)
-        return networkSource.addNewItem(item)
+        networkSource.addNewItem(item)
     }
 
-    suspend fun getItems(): Flow<List<ToDoItem>> = dbSource.getItems()
+    override suspend fun getItems(): Flow<List<ToDoItem>> = dbSource.getItems()
 
-    suspend fun getById(id: String): ToDoItem? {
+    override suspend fun getById(id: String): ToDoItem? {
         var result = dbSource.getById(id)
         if (result == null) result = networkSource.getById(id)
         return result
     }
 
-    suspend fun changeItem(toDoItem: ToDoItem): NetworkSource.ResponseStatus {
+    override suspend fun changeItem(toDoItem: ToDoItem) {
         dbSource.changeItem(toDoItem)
-        return networkSource.changeItem(toDoItem)
+        networkSource.changeItem(toDoItem)
     }
 
-    suspend fun deleteItem(id: String): NetworkSource.ResponseStatus {
+    override suspend fun deleteItem(id: String){
         dbSource.deleteItem(id)
-        return networkSource.deleteItem(id)
+        networkSource.deleteItem(id)
     }
 }
