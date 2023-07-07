@@ -1,17 +1,14 @@
 package com.example.todolist.ui.viewModels
 
-import android.app.Activity
 import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.todolist.data.repository.IRepository
-import com.example.todolist.data.repository.ToDoRepository
-import com.example.todolist.di.scopes.AppScope
+import com.example.todolist.di.scopes.ActivityScope
 import com.example.todolist.utils.getDeviceId
 import javax.inject.Inject
 
-@AppScope
+@ActivityScope
 open class ViewModelFactory @Inject constructor(
     private val context: Context,
     private val repository: IRepository

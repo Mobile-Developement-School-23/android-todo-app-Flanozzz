@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.R
 import com.example.todolist.ToDoApp
-import com.example.todolist.utils.*
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.databinding.FragmentEditTaskBinding
 import com.example.todolist.ui.viewModels.ToDoListViewModel
@@ -20,6 +19,12 @@ import com.example.todolist.ui.viewModels.ViewModelFactory
 import com.example.todolist.utils.Constants.Companion.HIGH_IMPORTANCE_POPUP_MENU_BUTTON_ID
 import com.example.todolist.utils.Constants.Companion.LOW_IMPORTANCE_POPUP_MENU_BUTTON_ID
 import com.example.todolist.utils.Constants.Companion.NO_IMPORTANCE_POPUP_MENU_BUTTON_ID
+import com.example.todolist.utils.getAndroidAttrTextColor
+import com.example.todolist.utils.getFormattedDate
+import com.example.todolist.utils.getUnixTime
+import com.example.todolist.utils.hideKeyboard
+import com.example.todolist.utils.setCurrentDateToDatePicker
+import com.example.todolist.utils.setTextViewByImportance
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,6 +58,7 @@ class EditTaskFragment : Fragment() {
     private fun setupDependencies(){
         (requireContext().applicationContext as ToDoApp)
             .appComponent
+            .activityComponent()
             .editTaskFragmentComponent()
             .inject(this)
     }

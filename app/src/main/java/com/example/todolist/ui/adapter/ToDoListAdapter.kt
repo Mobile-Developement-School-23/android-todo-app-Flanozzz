@@ -14,11 +14,8 @@ import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.R
 import com.example.todolist.utils.*
 import com.example.todolist.databinding.TaskBinding
-import com.example.todolist.di.scopes.FragmentScope
-import javax.inject.Inject
 
-@FragmentScope
-class ToDoListAdapter @Inject constructor(
+class ToDoListAdapter (
     private val actionListener: IOnTaskTouchListener
 ) : RecyclerView.Adapter<ToDoListAdapter.ToDoItemViewHolder>(){
 
@@ -57,7 +54,7 @@ class ToDoListAdapter @Inject constructor(
             }
 
             taskInfoContainer.setOnLongClickListener{
-                showPopupMenuAction(it, position, toDoItem)
+                showPopupMenuAction(it, toDoItem)
                 return@setOnLongClickListener true
             }
 
@@ -80,7 +77,7 @@ class ToDoListAdapter @Inject constructor(
         }
     }
 
-    private fun showPopupMenuAction(view: View, position: Int, task: ToDoItem){
+    private fun showPopupMenuAction(view: View, task: ToDoItem){
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.menu.add(Menu.NONE, DELETE, Menu.NONE, view.context.getString(R.string.Delete))
 

@@ -20,7 +20,6 @@ import com.example.todolist.ToDoApp
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
-import com.example.todolist.di.fragment.ToDoListFragmentComponent
 import com.example.todolist.ui.adapter.NonScrollableLinearLayoutManager
 import com.example.todolist.ui.viewModels.ViewModelFactory
 import com.example.todolist.utils.getCurrentUnixTime
@@ -56,6 +55,7 @@ class ToDoListFragment : Fragment() {
     private fun setupDependencies(){
         (requireContext().applicationContext as ToDoApp)
             .appComponent
+            .activityComponent()
             .toDoListFragmentComponent()
             .inject(this)
     }

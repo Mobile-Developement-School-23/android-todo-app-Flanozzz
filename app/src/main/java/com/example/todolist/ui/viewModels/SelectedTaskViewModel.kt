@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.repository.IRepository
-import com.example.todolist.data.repository.ToDoRepository
-import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
