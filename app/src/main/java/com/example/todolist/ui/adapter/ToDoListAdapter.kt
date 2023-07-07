@@ -14,8 +14,11 @@ import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.R
 import com.example.todolist.utils.*
 import com.example.todolist.databinding.TaskBinding
+import com.example.todolist.di.scopes.FragmentScope
+import javax.inject.Inject
 
-class ToDoListAdapter(
+@FragmentScope
+class ToDoListAdapter @Inject constructor(
     private val actionListener: IOnTaskTouchListener
 ) : RecyclerView.Adapter<ToDoListAdapter.ToDoItemViewHolder>(){
 

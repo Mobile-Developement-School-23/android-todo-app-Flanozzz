@@ -7,12 +7,14 @@ import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.api.ToDoApi
 import com.example.todolist.data.model.ElementResponse
 import com.example.todolist.data.model.ListResponse
+import com.example.todolist.di.scopes.AppScope
 import com.example.todolist.utils.Constants.Companion.BAD_REQUEST_CODE
 import kotlinx.coroutines.delay
 import retrofit2.Response
 import javax.inject.Inject
 
 
+@AppScope
 class NetworkSource @Inject constructor(private val api: ToDoApi) {
 
     private var toDoItems: List<ToDoItem> = emptyList()

@@ -1,12 +1,10 @@
 package com.example.todolist
 
 import android.app.Application
+import android.util.Log
 import com.example.todolist.data.DataSyncWorker
-import com.example.todolist.di.AppComponent
-import com.example.todolist.di.AppModule
-import com.example.todolist.di.DaggerAppComponent
-import com.example.todolist.di.NetworkModule
-import com.example.todolist.di.RepositoryModule
+import com.example.todolist.di.app.AppComponent
+import com.example.todolist.di.app.DaggerAppComponent
 
 class ToDoApp : Application() {
 
@@ -14,10 +12,9 @@ class ToDoApp : Application() {
     override fun onCreate() {
         super.onCreate()
         DataSyncWorker.startPeriodicWork(this)
-
+        Log.w("AAA", "create")
         appComponent = DaggerAppComponent
-            .builder()
-            .withContext(this)
-            .build()
+            .factory()
+            .create(this)
     }
 }

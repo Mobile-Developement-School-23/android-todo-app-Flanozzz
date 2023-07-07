@@ -1,4 +1,4 @@
-package com.example.todolist.di
+package com.example.todolist.di.scopes
 
 import javax.inject.Scope
 

@@ -20,6 +20,7 @@ import com.example.todolist.ToDoApp
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
+import com.example.todolist.di.fragment.ToDoListFragmentComponent
 import com.example.todolist.ui.adapter.NonScrollableLinearLayoutManager
 import com.example.todolist.ui.viewModels.ViewModelFactory
 import com.example.todolist.utils.getCurrentUnixTime
@@ -34,8 +35,8 @@ class ToDoListFragment : Fragment() {
 
     private val selectedTaskViewModel: SelectedTaskViewModel by activityViewModels{viewModelFactory}
     private val toDoListViewModel: ToDoListViewModel by activityViewModels{viewModelFactory}
-    private lateinit var adapter: ToDoListAdapter
     private lateinit var binding: FragmentToDoListBinding
+    private lateinit var adapter: ToDoListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,13 +44,20 @@ class ToDoListFragment : Fragment() {
     ): View {
         binding = FragmentToDoListBinding.inflate(inflater, container, false)
 
-        (requireContext().applicationContext as ToDoApp).appComponent.inject(this)
+        setupDependencies()
 
         setupRecycleViewAdapter()
         setupObservers()
         setListeners()
 
         return binding.root
+    }
+
+    private fun setupDependencies(){
+        (requireContext().applicationContext as ToDoApp)
+            .appComponent
+            .toDoListFragmentComponent()
+            .inject(this)
     }
 
     private fun setListeners(){

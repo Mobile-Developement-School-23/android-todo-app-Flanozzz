@@ -2,9 +2,11 @@ package com.example.todolist.data.source
 
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.db.ToDoItemDao
+import com.example.todolist.di.scopes.AppScope
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+@AppScope
 class LocalDbSource @Inject constructor(private val toDoItemDao: ToDoItemDao) {
 
     suspend fun addNewItem(item: ToDoItem) {

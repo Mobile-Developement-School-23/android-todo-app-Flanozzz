@@ -9,10 +9,8 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.todolist.ToDoApp
 import com.example.todolist.databinding.ActivityMainBinding
-import com.example.todolist.data.source.network.NetworkSource
-import com.example.todolist.di.subcomponents.ActivityComponent
+import com.example.todolist.di.activity.ActivityComponent
 import com.example.todolist.utils.makeRefreshSnackbar
-import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.viewModels.ToDoListViewModel
 import com.example.todolist.ui.viewModels.ViewModelFactory
 import kotlinx.coroutines.launch
@@ -26,13 +24,12 @@ class MainActivity : AppCompatActivity() {
     private val toDoListViewModel: ToDoListViewModel by viewModels {viewModelFactory}
     private lateinit var connectivityCallback: ConnectivityManager.NetworkCallback
     private lateinit var binding: ActivityMainBinding
-    private lateinit var activityComponent: ActivityComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        val activityComponent = (applicationContext as ToDoApp)
+        (applicationContext as ToDoApp)
             .appComponent
             .activityComponent()
             .inject(this)

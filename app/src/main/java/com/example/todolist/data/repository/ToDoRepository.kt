@@ -3,10 +3,12 @@ package com.example.todolist.data.repository
 import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.source.LocalDbSource
+import com.example.todolist.di.scopes.AppScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
+@AppScope
 class ToDoRepository @Inject constructor(
     private val dbSource: LocalDbSource,
     private val networkSource: NetworkSource

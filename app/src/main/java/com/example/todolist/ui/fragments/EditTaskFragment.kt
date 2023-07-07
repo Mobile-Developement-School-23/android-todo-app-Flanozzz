@@ -32,8 +32,8 @@ class EditTaskFragment : Fragment() {
     private lateinit var binding: FragmentEditTaskBinding
     private val selectedTaskViewModel: SelectedTaskViewModel by activityViewModels{viewModelFactory}
     private val toDoListViewModel: ToDoListViewModel by activityViewModels { viewModelFactory }
-    private var toDoItem: ToDoItem? = null
 
+    private var toDoItem: ToDoItem? = null
     private var importance: ToDoItem.Importance = ToDoItem.Importance.DEFAULT
     private var deadline: Long? = null
 
@@ -43,12 +43,18 @@ class EditTaskFragment : Fragment() {
     ): View {
         binding = FragmentEditTaskBinding.inflate(inflater, container, false)
 
-        (requireContext().applicationContext as ToDoApp).appComponent.inject(this)
-
+        setupDependencies()
         setupObservers()
         setupListeners()
 
         return binding.root
+    }
+
+    private fun setupDependencies(){
+        (requireContext().applicationContext as ToDoApp)
+            .appComponent
+            .editTaskFragmentComponent()
+            .inject(this)
     }
 
     private fun setupObservers() {
