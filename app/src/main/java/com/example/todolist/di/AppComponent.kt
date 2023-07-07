@@ -1,6 +1,7 @@
 package com.example.todolist.di
 
 import android.content.Context
+import com.example.todolist.di.subcomponents.ActivityComponent
 import com.example.todolist.ui.MainActivity
 import com.example.todolist.ui.fragments.EditTaskFragment
 import com.example.todolist.ui.fragments.ToDoListFragment
@@ -17,7 +18,9 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
+    fun activityComponent(): ActivityComponent
+
     fun inject(editTaskFragment: EditTaskFragment)
     fun inject(toDoListFragment: ToDoListFragment)
-    fun inject(mainActivity: MainActivity)
+//    fun inject(mainActivity: MainActivity)
 }

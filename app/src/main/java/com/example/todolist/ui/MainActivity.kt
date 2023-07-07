@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.todolist.ToDoApp
 import com.example.todolist.databinding.ActivityMainBinding
 import com.example.todolist.data.source.network.NetworkSource
+import com.example.todolist.di.subcomponents.ActivityComponent
 import com.example.todolist.utils.makeRefreshSnackbar
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.viewModels.ToDoListViewModel
@@ -25,11 +26,16 @@ class MainActivity : AppCompatActivity() {
     private val toDoListViewModel: ToDoListViewModel by viewModels {viewModelFactory}
     private lateinit var connectivityCallback: ConnectivityManager.NetworkCallback
     private lateinit var binding: ActivityMainBinding
+    private lateinit var activityComponent: ActivityComponent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        (applicationContext as ToDoApp).appComponent.inject(this)
+        val activityComponent = (applicationContext as ToDoApp)
+            .appComponent
+            .activityComponent()
+            .inject(this)
 
         toDoListViewModel.syncData()
         registerNetworkCallback()
