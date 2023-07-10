@@ -19,7 +19,7 @@
             android:paddingEnd="16dp"
             android:paddingBottom="48dp">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/editTextContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -28,28 +28,27 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:cardBackgroundColor="?android:attr/colorSecondary"
                 android:elevation="0dp"
                 android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp">
+                android:layout_marginEnd="2dp"
+                style="@style/Widget.Material3.CardView.Elevated">
 
-                <androidx.appcompat.widget.AppCompatEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextField"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
                     android:minHeight="104dp"
                     android:hint="@string/what_to_do"
                     android:padding="16dp"
                     android:textSize="@dimen/body_text_size"
-                    style="@style/Widget.AppCompat.EditText"
+                    style="@style/ThemeOverlay.Material3.TextInputEditText"
+                    android:background="@null"
                     android:lineHeight="@dimen/body_line_height"
-                    android:textColor="?android:attr/textColor"
                     android:gravity="top"/>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/importanceTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,7 +59,7 @@
                 app:layout_constraintTop_toBottomOf="@id/editTextContainer"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/importanceStateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,7 +76,7 @@
                 app:layout_constraintTop_toBottomOf="@id/importanceStateTextView"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/deadlineTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,17 +87,16 @@
                 app:layout_constraintTop_toBottomOf="@id/importanceDeadlineDivider"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/deadlineDateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/_2_2021"
-                android:textColor="@color/blue"
                 app:layout_constraintTop_toBottomOf="@id/deadlineTextView"
                 app:layout_constraintStart_toStartOf="parent"
                 android:visibility="invisible"/>
 
-            <androidx.appcompat.widget.SwitchCompat
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/dateSwitcher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,16 +118,12 @@
                 android:layout_height="wrap_content"
                 app:iconGravity="start"
                 app:icon="@drawable/ic_baseline_delete_24"
-                app:iconTint="@color/red"
-                android:padding="0dp"
                 android:textAllCaps="false"
-                android:textColor="@color/red"
                 android:text="@string/Delete"
-                android:background="@color/transparent"
                 android:layout_marginTop="5dp"
+                style="@style/Widget.Material3.Button.TextButton"
                 app:layout_constraintTop_toBottomOf="@id/bottomDivider"
-                app:layout_constraintStart_toStartOf="parent"
-                                />
+                app:layout_constraintStart_toStartOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -143,7 +137,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="?android:attr/windowBackground"
         android:orientation="horizontal"
         android:paddingStart="5dp"
         android:paddingEnd="16dp">
@@ -154,24 +147,22 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_close_24"
             android:layout_gravity="center"
-            android:backgroundTint="@color/transparent"
-            app:tint="?android:attr/textColor" />
+            android:backgroundTint="@color/transparent" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?android:attr/borderlessButtonStyle"
             android:textSize="@dimen/button_text_size"
             android:lineHeight="@dimen/body_line_height"
             android:text="@string/save"
-            android:textColor="@color/blue"
             android:padding="0dp"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_gravity="center"/>
 
     </LinearLayout>
@@ -195,9 +186,6 @@
             android:id="@+id/datePicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/colorSecondary"
-            android:headerBackground="?android:attr/colorAccent"
-            android:theme="@style/DatePickerStyle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -208,10 +196,8 @@
             android:id="@+id/pickDateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?android:attr/borderlessButtonStyle"
             android:textAllCaps="false"
             android:text="@string/Ready"
-            android:textColor="?android:attr/colorAccent"
             app:layout_constraintEnd_toEndOf="@id/datePicker"
             app:layout_constraintBottom_toBottomOf="@id/datePicker"/>
 
@@ -219,10 +205,8 @@
             android:id="@+id/cancelPickDateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?android:attr/borderlessButtonStyle"
             android:textAllCaps="false"
             android:text="@string/Cancel"
-            android:textColor="?android:attr/colorAccent"
             app:layout_constraintEnd_toStartOf="@id/pickDateButton"
             app:layout_constraintBottom_toBottomOf="@id/pickDateButton"/>
 

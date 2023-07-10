@@ -111,7 +111,7 @@ class ToDoListFragment : Fragment() {
         } else {
             R.drawable.visibility
         }
-        binding.eyeButton.setImageResource(iconRes)
+        binding.eyeButton.setIconResource(iconRes)
     }
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {

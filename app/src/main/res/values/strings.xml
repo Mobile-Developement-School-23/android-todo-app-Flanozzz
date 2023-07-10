@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="MyTasks">Мои дела</string>
-    <string name="done">Выволнено —</string>
+    <string name="done">Выполнено —</string>
     <string name="buy_smth">Купить что-то</string>
     <string name="new_">Новое</string>
     <!-- TODO: Remove or change this placeholder text -->

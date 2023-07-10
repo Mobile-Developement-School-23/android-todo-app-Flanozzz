@@ -1,36 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="secondaryText">
+<!--    <style name="secondaryText">-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:textColor">?android:attr/textColorTertiary</item>-->
+<!--        <item name="lineHeight">@dimen/body_line_height</item>-->
+<!--    </style>-->
+
+<!--    <style name="PopUpMenuField">-->
+<!--        <item name="android:textSize">@dimen/body_text_size</item>-->
+<!--        <item name="android:padding">16dp</item>-->
+<!--        <item name="android:background">@color/transparent</item>-->
+<!--        <item name="android:textColor">?android:attr/textColor</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--    </style>-->
+
+<!--    <style name="DatePickerStyle">-->
+<!--        <item name="android:textColorPrimary">?android:attr/textColor</item>-->
+<!--        <item name="android:textColorSecondary">?android:attr/textColorTertiary</item>-->
+<!--        <item name="android:textColorPrimaryInverse">?android:attr/windowBackground</item>-->
+<!--        <item name="android:textColorSecondaryInverse">#999999</item>-->
+<!--        <item name="android:colorControlNormal">#999999</item>-->
+<!--        <item name="android:colorControlActivated">?android:attr/colorAccent</item>-->
+<!--    </style>-->
+
+<!--    <style name="PopupMenu" parent="Widget.Material3.PopupMenu">-->
+<!--&lt;!&ndash;        <item name="android:popupBackground">?android:attr/colorForeground</item>&ndash;&gt;-->
+<!--    </style>-->
+
+<!--    <style name="MySnackbar" parent="Widget.MaterialComponents.Snackbar">-->
+<!--        &lt;!&ndash; Настройки для внешнего вида Snackbar &ndash;&gt;-->
+<!--&lt;!&ndash;        <item name="android:background">?android:attr/colorSecondary</item>&ndash;&gt;-->
+<!--        <item name="android:textColor">?android:attr/colorAccent</item>-->
+<!--    </style>-->
+
+    <style name="large_title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/large_title_text_size</item>
+        <item name="android:lineHeight">@dimen/large_title_line_height</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="title" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:lineHeight">@dimen/title_line_height</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="button" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="android:lineHeight">@dimen/button_line_height</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="body" parent="Widget.MaterialComponents.TextView">
         <item name="android:textSize">@dimen/body_text_size</item>
-        <item name="android:textColor">?android:attr/textColorTertiary</item>
-        <item name="lineHeight">@dimen/body_line_height</item>
+        <item name="android:lineHeight">@dimen/body_line_height</item>
+        <item name="android:fontWeight">400</item>
     </style>
 
-    <style name="PopUpMenuField">
-        <item name="android:textSize">@dimen/body_text_size</item>
-        <item name="android:padding">16dp</item>
-        <item name="android:background">@color/transparent</item>
-        <item name="android:textColor">?android:attr/textColor</item>
-        <item name="android:textAllCaps">false</item>
-    </style>
-
-    <style name="DatePickerStyle">
-        <item name="android:textColorPrimary">?android:attr/textColor</item>
-        <item name="android:textColorSecondary">?android:attr/textColorTertiary</item>
-        <item name="android:textColorPrimaryInverse">?android:attr/windowBackground</item>
-        <item name="android:textColorSecondaryInverse">#999999</item>
-        <item name="android:colorControlNormal">#999999</item>
-        <item name="android:colorControlActivated">?android:attr/colorAccent</item>
-    </style>
-
-    <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:popupBackground">?android:attr/colorForeground</item>
-    </style>
-
-    <style name="MySnackbar" parent="Widget.MaterialComponents.Snackbar">
-        <!-- Настройки для внешнего вида Snackbar -->
-<!--        <item name="android:background">?android:attr/colorSecondary</item>-->
-        <item name="android:textColor">?android:attr/colorAccent</item>
+    <style name="subhead" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/subhead_text_size</item>
+        <item name="android:lineHeight">@dimen/subhead_line_height</item>
+        <item name="android:fontWeight">400</item>
     </style>
 
 </resources>

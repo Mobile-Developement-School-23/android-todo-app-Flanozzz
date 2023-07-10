@@ -176,15 +176,15 @@ class EditTaskFragment : Fragment() {
     }
 
     private fun setDeleteButtonView(isNewTask: Boolean){
-        val color: Int = if (isNewTask) {
+        if (isNewTask) {
             binding.deleteButton.isEnabled = false
-            getAndroidAttrTextColor(requireContext(), android.R.attr.colorButtonNormal)
+            //getAndroidAttrTextColor(requireContext(), android.R.attr.colorButtonNormal)
         } else {
             binding.deleteButton.isEnabled = true
-            requireContext().getColor(R.color.red)
+            //requireContext().getColor(R.color.red)
         }
-        binding.deleteButton.setTextColor(color)
-        binding.deleteButton.iconTint = ColorStateList.valueOf(color)
+        //binding.deleteButton.setTextColor(color)
+        //binding.deleteButton.iconTint = ColorStateList.valueOf(color)
     }
 
     private fun setSwitcherView(deadline: Long?){
