@@ -12,16 +12,17 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.TextView
-import android.widget.Toast
 import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
 import com.google.android.material.snackbar.Snackbar
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 
-fun getUnixTime(dayOfMonth: Int, month: Int, year: Int): Long {
+fun getUnixTime(dayOfMonth: Int, monthIndex: Int, year: Int): Long {
     val calendar = Calendar.getInstance()
-    calendar.set(year, month, dayOfMonth, 0, 0, 0)
+    calendar.set(year, monthIndex, dayOfMonth, 0, 0, 0)
     calendar.set(Calendar.MILLISECOND, 0)
     return calendar.timeInMillis / 1000
 }
@@ -81,5 +82,15 @@ fun setTextViewByImportance(textView: TextView, importance: ToDoItem.Importance,
         ToDoItem.Importance.DEFAULT -> textView.text = context.getString(R.string.No)
         ToDoItem.Importance.LOW -> textView.text = context.getString(R.string.Low)
         ToDoItem.Importance.HIGH -> textView.text = context.getString(R.string.High)
+    }
+}
+
+fun LocalDateTime.toMillis() = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+fun getStringByImportance(importance: ToDoItem.Importance, context: Context): String{
+    return when(importance){
+        ToDoItem.Importance.DEFAULT -> context.getString(R.string.No)
+        ToDoItem.Importance.LOW -> context.getString(R.string.Low)
+        ToDoItem.Importance.HIGH -> context.getString(R.string.High)
     }
 }

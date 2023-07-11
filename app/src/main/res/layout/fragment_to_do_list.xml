@@ -72,7 +72,7 @@
                         android:id="@+id/toDoListRecycleView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingTop="16dp"
+                        android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         tools:itemCount="13"
                         tools:listitem="@layout/task" />

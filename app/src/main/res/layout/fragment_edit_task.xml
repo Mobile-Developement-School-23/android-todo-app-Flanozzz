@@ -141,13 +141,13 @@
         android:paddingStart="5dp"
         android:paddingEnd="16dp">
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_close_24"
+            app:icon="@drawable/ic_baseline_close_24"
             android:layout_gravity="center"
-            android:backgroundTint="@color/transparent" />
+            style="@style/Widget.Material3.Button.IconButton"/>
 
         <View
             android:layout_width="0dp"

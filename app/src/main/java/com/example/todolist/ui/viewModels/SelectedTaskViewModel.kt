@@ -44,6 +44,30 @@ class SelectedTaskViewModel(
         return isNewTask
     }
 
+    fun updateText(text: String){
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
+            text = text,
+            dateOfChange = getCurrentUnixTime(),
+            lastUpdatedBy = deviceId,
+        )
+    }
+
+    fun updateDeadline(deadline: Long?){
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
+            deadline = deadline,
+            dateOfChange = getCurrentUnixTime(),
+            lastUpdatedBy = deviceId,
+        )
+    }
+
+    fun updateImportance(importance: ToDoItem.Importance){
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
+            importance = importance,
+            dateOfChange = getCurrentUnixTime(),
+            lastUpdatedBy = deviceId,
+        )
+    }
+
     fun setNewData(newImportance: ToDoItem.Importance, newDeadline: Long?, newText: String){
         _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
             text = newText,
