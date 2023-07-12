@@ -36,4 +36,9 @@
 
     <string name="retry">Ошибка синхронизации данных, пожалуйста обновите список</string>
     <string name="refresh">Обновить</string>
+    <string name="Settings">Настройки</string>
+    <string name="app_theme">Тема приложения</string>
+    <string name="light_theme">Светлая</string>
+    <string name="dark_theme">Темная</string>
+    <string name="system_theme">Как в системе</string>
 </resources>

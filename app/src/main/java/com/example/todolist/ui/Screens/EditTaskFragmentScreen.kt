@@ -25,6 +25,8 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Close
 import androidx.compose.material3.Card
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,6 +38,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -157,6 +160,22 @@ fun DeadlinePicker(
         )
     )
 }
+
+
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Preview
+//@Composable
+//fun dp(){
+//    val datePickerState = rememberDatePickerState()
+//    DatePickerDialog(
+//        onDismissRequest = { /*TODO*/ },
+//        confirmButton = { /*TODO*/ },
+//        dismissButton = {}
+//    ) {
+//        DatePicker(state = datePickerState)
+//    }
+//}
 
 @Composable
 fun DeleteTaskButton(

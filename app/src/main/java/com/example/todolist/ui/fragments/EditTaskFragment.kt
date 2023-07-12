@@ -1,6 +1,7 @@
 package com.example.todolist.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
@@ -17,11 +18,13 @@ import com.example.todolist.ui.viewModels.ToDoListViewModel
 import com.example.todolist.ui.viewModels.ViewModelFactory
 import com.example.todolist.utils.getCurrentUnixTime
 import com.example.todolist.utils.getDeviceId
+import com.example.todolist.utils.getNextDayBeginUnixTime
 import com.example.todolist.utils.getStringByImportance
 import com.example.todolist.utils.getUnixTime
 import com.example.todolist.utils.hideKeyboard
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 class EditTaskFragment : Fragment() {
@@ -41,7 +44,7 @@ class EditTaskFragment : Fragment() {
 
         setupDependencies()
         setupObservers()
-
+        Log.d("lifecycle", "edit task fragment - onCreateView")
         return ComposeView(requireContext()).apply {
             setContent {
                 AppTheme {

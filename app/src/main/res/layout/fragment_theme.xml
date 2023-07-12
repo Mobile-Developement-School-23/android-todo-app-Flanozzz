@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fragments.ThemeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/settingsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Settings"
+            style="@style/large_title"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="@dimen/title_marin_start"
+            android:layout_marginTop="@dimen/title_marin_top"/>
+
+        <FrameLayout
+            android:id="@+id/dividerContainer1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/settingsTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/settings_divider_style">
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/settingsTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </FrameLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/appThemeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_theme"
+            style="@style/title"
+            android:paddingBottom="10dp"
+            android:paddingTop="5dp"
+            app:layout_constraintStart_toStartOf="@id/settingsTitle"
+            app:layout_constraintTop_toBottomOf="@id/dividerContainer1"/>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/appThemeTitle"
+            app:layout_constraintStart_toStartOf="@id/appThemeTitle">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/light_theme"
+                android:textSize="@dimen/body_text_size"/>
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dark_theme"
+                android:textSize="@dimen/body_text_size"/>
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/system_theme"
+                android:textSize="@dimen/body_text_size"/>
+
+        </RadioGroup>
+
+        <FrameLayout
+            android:id="@+id/dividerContainer2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/radioGroup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/settings_divider_style">
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_published_with_changes_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/to_do_floating_action_button"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_close_24"
+            style="@style/Widget.Material3.Button.IconButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

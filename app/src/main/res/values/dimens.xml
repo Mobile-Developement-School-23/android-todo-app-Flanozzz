@@ -17,4 +17,8 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="min_popupMenu_width">164dp</dimen>
+
+    <dimen name="title_marin_start">60dp</dimen>
+    <dimen name="title_marin_top">82dp</dimen>
+
 </resources>

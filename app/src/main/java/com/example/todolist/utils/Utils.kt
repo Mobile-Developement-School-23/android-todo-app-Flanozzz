@@ -7,6 +7,7 @@ import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -30,6 +31,13 @@ fun getUnixTime(dayOfMonth: Int, monthIndex: Int, year: Int): Long {
 fun getFormattedDate(unixTime: Long): String {
     val locale = Locale.getDefault()
     val dateFormat = SimpleDateFormat("d MMMM yyyy", locale)
+    val date = Date(unixTime * 1000)
+    return dateFormat.format(date)
+}
+
+fun getFormattedTime(unixTime: Long): String{
+    val locale = Locale.getDefault()
+    val dateFormat = SimpleDateFormat("h:mm a")
     val date = Date(unixTime * 1000)
     return dateFormat.format(date)
 }
@@ -93,4 +101,14 @@ fun getStringByImportance(importance: ToDoItem.Importance, context: Context): St
         ToDoItem.Importance.LOW -> context.getString(R.string.Low)
         ToDoItem.Importance.HIGH -> context.getString(R.string.High)
     }
+}
+
+fun getNextDayBeginUnixTime(){
+    val calendar = Calendar.getInstance()
+    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+    val currentMonth = calendar.get(Calendar.MONTH)
+    val currentYear = calendar.get(Calendar.YEAR)
+    calendar.set(currentYear, currentMonth, currentDay, 0, 0, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    Log.w("AAA", getFormattedTime(calendar.timeInMillis / 1000))
 }
