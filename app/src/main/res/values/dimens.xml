@@ -21,4 +21,5 @@
     <dimen name="title_marin_start">60dp</dimen>
     <dimen name="title_marin_top">82dp</dimen>
 
+    <integer name="transitionAnimationDuration">500</integer>
 </resources>

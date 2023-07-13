@@ -41,4 +41,8 @@
     <string name="light_theme">Светлая</string>
     <string name="dark_theme">Темная</string>
     <string name="system_theme">Как в системе</string>
+
+    <string name="time_has_already_passed">Введенное время уже прошло</string>
+    <string name="deadline_notifications">Уведомления о дедлайне</string>
+    <string name="Deadline_missed">Дедлайн пропущен!</string>
 </resources>

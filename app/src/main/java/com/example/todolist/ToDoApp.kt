@@ -1,10 +1,12 @@
 package com.example.todolist
 
 import android.app.Application
-import android.util.Log
-import com.example.todolist.data.DataSyncWorker
+import android.content.Context
+import com.example.todolist.data.workers.DataSyncWorker
 import com.example.todolist.di.app.AppComponent
 import com.example.todolist.di.app.DaggerAppComponent
+import com.example.todolist.utils.Constants.SETTINGS
+import com.example.todolist.utils.setSettingsTheme
 
 class ToDoApp : Application() {
 
@@ -12,9 +14,12 @@ class ToDoApp : Application() {
     override fun onCreate() {
         super.onCreate()
         DataSyncWorker.startPeriodicWork(this)
-        Log.w("AAA", "create")
+
         appComponent = DaggerAppComponent
             .factory()
             .create(this)
+
+        val settings = getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
+        setSettingsTheme(settings)
     }
 }

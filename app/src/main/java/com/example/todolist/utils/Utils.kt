@@ -3,6 +3,7 @@ package com.example.todolist.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
@@ -13,33 +14,60 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
+import com.example.todolist.data.workers.NotificationWorker
 import com.google.android.material.snackbar.Snackbar
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 fun getUnixTime(dayOfMonth: Int, monthIndex: Int, year: Int): Long {
     val calendar = Calendar.getInstance()
     calendar.set(year, monthIndex, dayOfMonth, 0, 0, 0)
     calendar.set(Calendar.MILLISECOND, 0)
-    return calendar.timeInMillis / 1000
+    return millisToUnix(calendar.timeInMillis)
 }
 
-fun getFormattedDate(unixTime: Long): String {
+fun unixTimeToDMY(unixTime: Long): String {
     val locale = Locale.getDefault()
     val dateFormat = SimpleDateFormat("d MMMM yyyy", locale)
-    val date = Date(unixTime * 1000)
+    val date = Date(unixToMillis(unixTime))
     return dateFormat.format(date)
 }
 
-fun getFormattedTime(unixTime: Long): String{
-    val locale = Locale.getDefault()
-    val dateFormat = SimpleDateFormat("h:mm a")
-    val date = Date(unixTime * 1000)
+fun unixTimeToHHMM(unixTime: Long): String {
+    val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val date = Date(unixToMillis(unixTime))
     return dateFormat.format(date)
+}
+
+fun getNextDayUnixTime(): Long {
+    val tomorrow = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate().plusDays(1)
+    val midnight = LocalDateTime.of(tomorrow, LocalTime.MIDNIGHT)
+    return millisToUnix(midnight.toMillis())
+}
+
+fun setUnixTime(hour: Int, minute: Int, unixTime: Long): Long {
+    val localDateTime = Instant.ofEpochSecond(unixTime).atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val updatedDateTime = localDateTime.withHour(hour).withMinute(minute).withSecond(0)
+    return millisToUnix(updatedDateTime.toMillis())
+}
+
+fun getEndOfDayUnixTime(unixTime: Long): Long {
+    val dateTime = Instant.ofEpochSecond(unixTime).atZone(ZoneId.systemDefault()).toLocalDateTime()
+    val endOfDay = dateTime.with(LocalTime.MAX)
+    return millisToUnix(endOfDay.toMillis())
 }
 
 fun getAndroidAttrTextColor(context: Context, colorId: Int): Int {
@@ -53,7 +81,15 @@ fun getAndroidAttrTextColor(context: Context, colorId: Int): Int {
 }
 
 fun getCurrentUnixTime(): Long{
-    return System.currentTimeMillis() / 1000
+    return millisToUnix(System.currentTimeMillis())
+}
+
+fun unixToMillis(unix: Long): Long{
+    return unix * 1000
+}
+
+fun millisToUnix(millis: Long): Long{
+    return millis / 1000
 }
 
 @SuppressLint("HardwareIds")
@@ -103,12 +139,11 @@ fun getStringByImportance(importance: ToDoItem.Importance, context: Context): St
     }
 }
 
-fun getNextDayBeginUnixTime(){
-    val calendar = Calendar.getInstance()
-    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-    val currentMonth = calendar.get(Calendar.MONTH)
-    val currentYear = calendar.get(Calendar.YEAR)
-    calendar.set(currentYear, currentMonth, currentDay, 0, 0, 0)
-    calendar.set(Calendar.MILLISECOND, 0)
-    Log.w("AAA", getFormattedTime(calendar.timeInMillis / 1000))
+fun setSettingsTheme(sharedPreferences: SharedPreferences){
+    val mode = when(sharedPreferences.getString(Constants.THEME, Constants.SYSTEM_THEME)){
+        Constants.LIGHT_THEME -> AppCompatDelegate.MODE_NIGHT_NO
+        Constants.DARK_THEME -> AppCompatDelegate.MODE_NIGHT_YES
+        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    }
+    AppCompatDelegate.setDefaultNightMode(mode)
 }

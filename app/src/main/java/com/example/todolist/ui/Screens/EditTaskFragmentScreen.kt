@@ -1,18 +1,14 @@
 package com.example.todolist.ui.Screens
 
-import android.content.Context
-import android.util.Log
-import androidx.compose.foundation.ScrollState
+import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -24,27 +20,32 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -52,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.ui.components.BottomSheetContent
@@ -61,12 +63,8 @@ import com.example.todolist.ui.theme.button
 import com.example.todolist.ui.theme.disabledPanelAlpha
 import com.example.todolist.ui.theme.largeTitle
 import com.example.todolist.ui.theme.subhead
-import com.example.todolist.utils.getCurrentUnixTime
-import com.example.todolist.utils.getDeviceId
-import com.example.todolist.utils.getFormattedDate
-import com.example.todolist.utils.getStringByImportance
-import com.example.todolist.utils.getUnixTime
-import com.example.todolist.utils.hideKeyboard
+import com.example.todolist.utils.unixTimeToDMY
+import com.example.todolist.utils.unixTimeToHHMM
 import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -74,10 +72,13 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.maxkeppeler.sheets.clock.ClockDialog
+import com.maxkeppeler.sheets.clock.models.ClockConfig
+import com.maxkeppeler.sheets.clock.models.ClockSelection
+import java.time.LocalTime
 
 
-
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun Screen(
@@ -86,10 +87,11 @@ fun Screen(
 ){
     AppTheme {
         val calendarState = rememberUseCaseState()
+        val clockState = rememberUseCaseState()
         val modalBottomSheetState = androidx.compose.material.rememberModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden
         )
-
+        val scrollState = rememberScrollState()
         ModalBottomSheetLayout(
             sheetState = modalBottomSheetState,
             sheetContent = { BottomSheetContent(
@@ -98,9 +100,8 @@ fun Screen(
             )},
             sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
         ) {
-            val scrollState = rememberScrollState()
             Box(modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
+                //.background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(scrollState)
             ){
@@ -130,6 +131,7 @@ fun Screen(
                         DeadlineSection(
                             selectedTask = selectedTask.value,
                             calendarState = calendarState,
+                            clockState = clockState,
                             updateDeadlineAction = actions.updateDeadlineAction
                         )
                     }
@@ -137,12 +139,29 @@ fun Screen(
                         Modifier.padding(top = 16.dp, bottom = 16.dp)
                     )
                     DeleteTaskButton(actions.deleteButtonClickAction)
-                    Row(modifier = Modifier.height(400.dp)) {}
                 }
-                DeadlinePicker(calendarState, actions.calendarSelection)
             }
+
         }
+        DeadlineTimePicker(clockState = clockState, clockSelection = actions.clockSelection)
+        DeadlinePicker(calendarState, actions.calendarSelection)
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeadlineTimePicker(
+    clockState: UseCaseState,
+    clockSelection: ClockSelection
+){
+    ClockDialog(
+        state = clockState,
+        selection = clockSelection,
+        config = ClockConfig(
+            defaultTime = LocalTime.now(),
+            is24HourFormat = true
+        )
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,20 +181,6 @@ fun DeadlinePicker(
 }
 
 
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Preview
-//@Composable
-//fun dp(){
-//    val datePickerState = rememberDatePickerState()
-//    DatePickerDialog(
-//        onDismissRequest = { /*TODO*/ },
-//        confirmButton = { /*TODO*/ },
-//        dismissButton = {}
-//    ) {
-//        DatePicker(state = datePickerState)
-//    }
-//}
 
 @Composable
 fun DeleteTaskButton(
@@ -197,13 +202,16 @@ fun DeleteTaskButton(
 }
 
 @Composable
+@Preview
 fun DeadlineSection(
-    selectedTask: ToDoItem,
-    calendarState: UseCaseState,
-    updateDeadlineAction: (isChecked: Boolean) -> Unit
+    selectedTask: ToDoItem = ToDoItem.getDefaultTask(""),
+    calendarState: UseCaseState = rememberUseCaseState(),
+    clockState: UseCaseState = rememberUseCaseState(),
+    updateDeadlineAction: (isChecked: Boolean) -> Unit = {}
 ){
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -213,13 +221,22 @@ fun DeadlineSection(
                 color = MaterialTheme.colorScheme.onBackground
             )
             val date = selectedTask.deadline
-            Text(
-                modifier = Modifier
-                    .clickable { calendarState.show() },
-                text = if (date != null) getFormattedDate(date) else "",
-                style = subhead,
-                color = MaterialTheme.colorScheme.tertiary
-            )
+            Row {
+                Text(
+                    text = if (date != null) unixTimeToDMY(date) else "",
+                    style = subhead,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.clickable { calendarState.show() }
+                )
+                Text(
+                    text = if (date != null) unixTimeToHHMM(date) else "",
+                    style = subhead,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier
+                        .padding(start = 20.dp)
+                        .clickable { clockState.show() }
+                )
+            }
         }
         val isChecked = remember { mutableStateOf(false) }
         Switch(

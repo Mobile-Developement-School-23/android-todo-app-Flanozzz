@@ -5,6 +5,11 @@ import androidx.room.PrimaryKey
 import com.example.todolist.utils.getCurrentUnixTime
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.todolist.data.workers.NotificationWorker
+import java.util.concurrent.TimeUnit
 
 @Entity(tableName = "to_do_items_table")
 data class ToDoItem(

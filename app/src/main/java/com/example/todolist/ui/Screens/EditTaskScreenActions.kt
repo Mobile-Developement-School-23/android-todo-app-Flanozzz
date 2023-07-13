@@ -2,9 +2,11 @@ package com.example.todolist.ui.Screens
 
 import com.example.todolist.data.model.ToDoItem
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.clock.models.ClockSelection
 
 data class EditTaskScreenActions(
     val calendarSelection: CalendarSelection,
+    val clockSelection: ClockSelection,
     val deleteButtonClickAction: () -> Unit,
     val updateDeadlineAction: (isChecked: Boolean) -> Unit,
     val updateImportanceAction: (importance: ToDoItem.Importance) -> Unit,
@@ -18,6 +20,7 @@ data class EditTaskScreenActions(
         fun getEmptyActions(): EditTaskScreenActions{
             return EditTaskScreenActions(
                 CalendarSelection.Date{},
+                ClockSelection.HoursMinutes{_, _ -> },
                 {}, {}, {}, {}, {}, {}, {},
                 { return@EditTaskScreenActions "" },
             )

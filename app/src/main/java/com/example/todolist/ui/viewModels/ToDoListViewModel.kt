@@ -1,5 +1,6 @@
 package com.example.todolist.ui.viewModels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.ToDoItem
@@ -7,6 +8,7 @@ import com.example.todolist.data.repository.IRepository
 import com.example.todolist.data.repository.ToDoRepository
 import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.data.source.network.UnsuccessfulResponseException
+import com.example.todolist.data.workers.NotificationWorker.Companion.scheduleNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,7 +88,7 @@ open class ToDoListViewModel(
         }
     }
 
-    fun saveToDoItem(newToDoItem: ToDoItem, isNewTask: Boolean){
+    fun saveToDoItem(newToDoItem: ToDoItem, isNewTask: Boolean, context: Context){
         viewModelScope.launch(Dispatchers.IO) {
             performActionAndSetStatus {
                 if(isNewTask){
@@ -94,6 +96,7 @@ open class ToDoListViewModel(
                 } else{
                     repository.changeItem(newToDoItem)
                 }
+                scheduleNotification(newToDoItem, context)
             }
         }
     }

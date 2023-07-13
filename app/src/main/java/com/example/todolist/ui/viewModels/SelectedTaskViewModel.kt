@@ -1,15 +1,21 @@
 package com.example.todolist.ui.viewModels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.repository.IRepository
+import com.example.todolist.data.workers.NotificationWorker
 import com.example.todolist.utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class SelectedTaskViewModel(
     private val deviceId: String,
@@ -63,16 +69,6 @@ class SelectedTaskViewModel(
     fun updateImportance(importance: ToDoItem.Importance){
         _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
             importance = importance,
-            dateOfChange = getCurrentUnixTime(),
-            lastUpdatedBy = deviceId,
-        )
-    }
-
-    fun setNewData(newImportance: ToDoItem.Importance, newDeadline: Long?, newText: String){
-        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
-            text = newText,
-            deadline = newDeadline,
-            importance = newImportance,
             dateOfChange = getCurrentUnixTime(),
             lastUpdatedBy = deviceId,
         )

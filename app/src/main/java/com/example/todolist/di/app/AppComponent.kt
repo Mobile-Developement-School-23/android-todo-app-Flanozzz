@@ -1,7 +1,8 @@
 package com.example.todolist.di.app
 
 import android.content.Context
-import com.example.todolist.data.DataSyncWorker
+import com.example.todolist.data.workers.DataSyncWorker
+import com.example.todolist.data.workers.NotificationWorker
 import com.example.todolist.di.activity.ActivityComponent
 import com.example.todolist.di.scopes.AppScope
 import dagger.BindsInstance
@@ -21,4 +22,5 @@ interface AppComponent {
     fun activityComponent(): ActivityComponent
 
     fun inject(dataSyncWorker: DataSyncWorker)
+    fun inject(notificationWorker: NotificationWorker)
 }
