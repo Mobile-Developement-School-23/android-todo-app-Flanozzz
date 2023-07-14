@@ -96,16 +96,6 @@
                 android:layout_height="wrap_content"/>
         </FrameLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/applyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_published_with_changes_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            style="@style/to_do_floating_action_button"
-            />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/closeButton"
             android:layout_width="wrap_content"

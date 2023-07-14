@@ -1,4 +1,4 @@
-package com.example.todolist.ui.Screens
+package com.example.todolist.ui.Screens.actions
 
 import com.example.todolist.data.model.ToDoItem
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
@@ -17,7 +17,7 @@ data class EditTaskScreenActions(
     val getStringByImportanceAction: (importance: ToDoItem.Importance) -> String
 ){
     companion object{
-        fun getEmptyActions(): EditTaskScreenActions{
+        fun getEmptyActions(): EditTaskScreenActions {
             return EditTaskScreenActions(
                 CalendarSelection.Date{},
                 ClockSelection.HoursMinutes{_, _ -> },

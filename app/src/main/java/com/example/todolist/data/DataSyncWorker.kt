@@ -1,4 +1,4 @@
-package com.example.todolist.data.workers
+package com.example.todolist.data
 
 import android.content.Context
 import androidx.work.Constraints

@@ -8,28 +8,20 @@ import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
-import com.example.todolist.data.workers.NotificationWorker
 import com.google.android.material.snackbar.Snackbar
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 fun getUnixTime(dayOfMonth: Int, monthIndex: Int, year: Int): Long {

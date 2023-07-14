@@ -1,8 +1,6 @@
 package com.example.todolist.ui
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -11,11 +9,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.todolist.R
 import com.example.todolist.ToDoApp
-import com.example.todolist.data.workers.NotificationWorker
 import com.example.todolist.databinding.ActivityMainBinding
-import com.example.todolist.di.activity.ActivityComponent
 import com.example.todolist.utils.makeRefreshSnackbar
 import com.example.todolist.ui.viewModels.ToDoListViewModel
 import com.example.todolist.ui.viewModels.ViewModelFactory

@@ -5,13 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.repository.IRepository
-import com.example.todolist.data.repository.ToDoRepository
-import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.data.source.network.UnsuccessfulResponseException
-import com.example.todolist.data.workers.NotificationBroadcastReceiver
-import com.example.todolist.data.workers.NotificationJobService
-import com.example.todolist.data.workers.NotificationWorker
-import com.example.todolist.data.workers.NotificationWorker.Companion.scheduleNotification
+import com.example.todolist.ui.notifications.NotificationScheduler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +15,8 @@ import kotlinx.coroutines.withContext
 
 
 open class ToDoListViewModel(
-    private val repository: IRepository
+    private val repository: IRepository,
+    private val notificationScheduler: NotificationScheduler
 ) : ViewModel() {
     private var _toDoItems: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(emptyList())
     val toDoItems: Flow<List<ToDoItem>> = _toDoItems
@@ -49,6 +45,9 @@ open class ToDoListViewModel(
                     } else {
                         _viewableTasksStateFlow.value = list
                     }
+                }
+                list.forEach{
+                    notificationScheduler.scheduleNotification(it)
                 }
             }
         }
@@ -91,7 +90,7 @@ open class ToDoListViewModel(
         }
     }
 
-    fun saveToDoItem(newToDoItem: ToDoItem, isNewTask: Boolean, context: Context){
+    fun saveToDoItem(newToDoItem: ToDoItem, isNewTask: Boolean){
         viewModelScope.launch(Dispatchers.IO) {
             performActionAndSetStatus {
                 if(isNewTask){
@@ -99,8 +98,7 @@ open class ToDoListViewModel(
                 } else{
                     repository.changeItem(newToDoItem)
                 }
-                scheduleNotification(newToDoItem, context)
-                //NotificationBroadcastReceiver.scheduleNotification(newToDoItem, context)
+                notificationScheduler.scheduleNotification(newToDoItem)
             }
         }
     }

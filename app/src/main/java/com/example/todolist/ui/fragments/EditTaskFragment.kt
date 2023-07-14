@@ -13,7 +13,7 @@ import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.ToDoApp
 import com.example.todolist.databinding.FragmentEditTaskBinding
-import com.example.todolist.ui.Screens.EditTaskScreenActions
+import com.example.todolist.ui.Screens.actions.EditTaskScreenActions
 import com.example.todolist.ui.Screens.Screen
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.theme.AppTheme
@@ -127,8 +127,7 @@ class EditTaskFragment : Fragment() {
         if (toDoItem != null){
             toDoListViewModel.saveToDoItem(
                 toDoItem!!,
-                isNewTask,
-                requireContext()
+                isNewTask
             )
         }
         goBackToList()

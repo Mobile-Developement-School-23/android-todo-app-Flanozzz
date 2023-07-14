@@ -49,11 +49,11 @@ class ToDoListAdapter (
 
     private fun setListeners(holder: ToDoItemViewHolder, toDoItem: ToDoItem, position: Int){
         with(holder.binding){
-            taskInfoContainer.setOnClickListener{
+            rootContainer.setOnClickListener{
                 actionListener.onChangeButtonClick(toDoItem.id)
             }
 
-            taskInfoContainer.setOnLongClickListener{
+            rootContainer.setOnLongClickListener{
                 showPopupMenuAction(it, toDoItem)
                 return@setOnLongClickListener true
             }
