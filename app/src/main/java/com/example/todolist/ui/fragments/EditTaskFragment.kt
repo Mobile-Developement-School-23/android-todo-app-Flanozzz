@@ -42,6 +42,7 @@ class EditTaskFragment : Fragment() {
     private lateinit var binding: FragmentEditTaskBinding
 
     private var toDoItem: ToDoItem? = null
+    private var isNewTask: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +62,12 @@ class EditTaskFragment : Fragment() {
                         .selectedTaskFlow
                         .collectAsState(initial = ToDoItem.getDefaultTask(getDeviceId(requireContext())))
 
+                    val isNewTaskState = selectedTaskViewModel
+                        .isNewTaskFlow
+                        .collectAsState(initial = isNewTask)
+
+                    Log.w("AAA", isNewTaskState.value.toString())
+
                     Screen(
                         selectedTask = selectedTask,
                         actions = EditTaskScreenActions(
@@ -74,7 +81,8 @@ class EditTaskFragment : Fragment() {
                             updateTextAction = updateTextAction,
                             hideKeyboardAction = { hideKeyboard(requireActivity()) },
                             getStringByImportanceAction = { getStringByImportance(it, requireContext()) }
-                        )
+                        ),
+                        isNewTask = isNewTaskState.value
                     )
                 }
             }
@@ -119,7 +127,7 @@ class EditTaskFragment : Fragment() {
         if (toDoItem != null){
             toDoListViewModel.saveToDoItem(
                 toDoItem!!,
-                selectedTaskViewModel.isNewTask(),
+                isNewTask,
                 requireContext()
             )
         }
@@ -154,6 +162,11 @@ class EditTaskFragment : Fragment() {
         lifecycleScope.launch {
             selectedTaskViewModel.selectedTaskFlow.collect { task ->
                 toDoItem = task
+            }
+        }
+        lifecycleScope.launch {
+            selectedTaskViewModel.isNewTaskFlow.collect{
+                isNewTask = it
             }
         }
     }

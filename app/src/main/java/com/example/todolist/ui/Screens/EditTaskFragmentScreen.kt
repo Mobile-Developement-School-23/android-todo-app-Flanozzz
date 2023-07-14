@@ -1,6 +1,7 @@
 package com.example.todolist.ui.Screens
 
 import android.app.TimePickerDialog
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -78,12 +79,13 @@ import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.time.LocalTime
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun Screen(
     selectedTask: State<ToDoItem> = mutableStateOf(ToDoItem.getDefaultTask("")),
-    actions: EditTaskScreenActions = EditTaskScreenActions.getEmptyActions()
+    actions: EditTaskScreenActions = EditTaskScreenActions.getEmptyActions(),
+    isNewTask: Boolean = false
 ){
     AppTheme {
         val calendarState = rememberUseCaseState()
@@ -101,7 +103,6 @@ fun Screen(
             sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
         ) {
             Box(modifier = Modifier
-                //.background(MaterialTheme.colorScheme.background)
                 .fillMaxSize()
                 .verticalScroll(scrollState)
             ){
@@ -138,7 +139,7 @@ fun Screen(
                     Divider(
                         Modifier.padding(top = 16.dp, bottom = 16.dp)
                     )
-                    DeleteTaskButton(actions.deleteButtonClickAction)
+                    DeleteTaskButton(actions.deleteButtonClickAction, isNewTask = isNewTask)
                 }
             }
 
@@ -180,15 +181,25 @@ fun DeadlinePicker(
     )
 }
 
-
+@Preview
+@Composable
+fun btn(){
+    AppTheme {
+        Button(onClick = { /*TODO*/ }, enabled = true) {
+            Text(text = "button")
+        }
+    }
+}
 
 @Composable
 fun DeleteTaskButton(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isNewTask: Boolean
 ){
     TextButton(
         modifier = Modifier.padding(start = 2.dp),
-        onClick = { onClick() }
+        onClick = { onClick() },
+        enabled = !isNewTask
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_baseline_delete_24),

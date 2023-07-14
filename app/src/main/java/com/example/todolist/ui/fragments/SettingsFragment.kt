@@ -14,13 +14,12 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.RadioGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.Navigation
 import com.example.todolist.R
 import com.example.todolist.data.workers.NotificationWorker
+import com.example.todolist.data.workers.NotificationBroadcastReceiver
 import com.example.todolist.databinding.FragmentSettingsBinding
 import com.example.todolist.utils.Constants.DARK_THEME
 import com.example.todolist.utils.Constants.LIGHT_THEME
@@ -57,7 +56,7 @@ class SettingsFragment : Fragment() {
     }
 
     private val applyButtonListener = OnClickListener {
-        showNotification("MyTitle", "MyMassage")
+        //NotificationBroadcastReceiver.testSchedule(requireContext())
     }
 
     private val closeButtonListener = OnClickListener{

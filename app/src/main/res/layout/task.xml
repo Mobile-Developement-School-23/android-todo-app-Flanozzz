@@ -19,6 +19,7 @@
         app:layout_constraintStart_toEndOf="@id/taskInfoCheckBox"
         app:layout_constraintEnd_toStartOf="@id/infoTaskButton"
         app:layout_constraintTop_toTopOf="parent"
+        android:foreground="?attr/selectableItemBackground"
         android:paddingTop="12dp"
         android:paddingBottom="16dp">
 

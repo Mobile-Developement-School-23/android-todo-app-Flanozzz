@@ -1,21 +1,15 @@
 package com.example.todolist.ui.viewModels
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.repository.IRepository
-import com.example.todolist.data.workers.NotificationWorker
 import com.example.todolist.utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
 
 class SelectedTaskViewModel(
     private val deviceId: String,
@@ -24,14 +18,15 @@ class SelectedTaskViewModel(
     private var _selectedTaskFlow = MutableStateFlow(ToDoItem.getDefaultTask(deviceId))
     val selectedTaskFlow: Flow<ToDoItem> = _selectedTaskFlow
 
-    private var isNewTask = false
+    private var _isNewTask = MutableStateFlow(true)
+    val isNewTaskFlow: Flow<Boolean> = _isNewTask
 
     fun selectTask(id: String){
         viewModelScope.launch(Dispatchers.IO) {
             val selectedToDoItem = repository.getById(id)
             withContext(Dispatchers.Main){
                 if(selectedToDoItem != null){
-                    isNewTask = false
+                    _isNewTask.value = false
                     _selectedTaskFlow.value = selectedToDoItem
                 }
                 else{
@@ -42,13 +37,13 @@ class SelectedTaskViewModel(
     }
 
     fun createTask(){
-        isNewTask = true
+        _isNewTask.value = true
         _selectedTaskFlow.value = ToDoItem.getDefaultTask(deviceId)
     }
 
-    fun isNewTask(): Boolean{
-        return isNewTask
-    }
+//    fun isNewTask(): Boolean{
+//        return isNewTask
+//    }
 
     fun updateText(text: String){
         _selectedTaskFlow.value = _selectedTaskFlow.value.copy(

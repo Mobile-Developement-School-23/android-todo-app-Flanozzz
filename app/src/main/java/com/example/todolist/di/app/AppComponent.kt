@@ -2,6 +2,7 @@ package com.example.todolist.di.app
 
 import android.content.Context
 import com.example.todolist.data.workers.DataSyncWorker
+import com.example.todolist.data.workers.NotificationBroadcastReceiver
 import com.example.todolist.data.workers.NotificationWorker
 import com.example.todolist.di.activity.ActivityComponent
 import com.example.todolist.di.scopes.AppScope
@@ -23,4 +24,5 @@ interface AppComponent {
 
     fun inject(dataSyncWorker: DataSyncWorker)
     fun inject(notificationWorker: NotificationWorker)
+    fun inject(notificationBroadcastReceiver: NotificationBroadcastReceiver)
 }

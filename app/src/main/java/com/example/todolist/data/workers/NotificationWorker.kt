@@ -3,21 +3,31 @@ package com.example.todolist.data.workers
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.provider.ContactsContract
 import android.util.Log
+import androidx.compose.ui.text.toLowerCase
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.todolist.R
 import com.example.todolist.ToDoApp
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.repository.IRepository
+import com.example.todolist.utils.getStringByImportance
 import com.example.todolist.utils.unixToMillis
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -61,9 +71,9 @@ class NotificationWorker(
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-        val notificationManager =
-            NotificationManagerCompat.from(context)
-        Log.d("notifications", "test notification")
+        val notificationManager = context.getSystemService(NOTIFICATION_SERVICE) as
+                NotificationManager
+        Log.d("toDoNotifications", "in showNotification")
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -75,7 +85,7 @@ class NotificationWorker(
                 val channel = NotificationChannel(CHANNEL_ID, channelName, importance)
                 notificationManager.createNotificationChannel(channel)
             }
-            Log.d("notifications", "test notification in if")
+            Log.d("toDoNotifications", "show notification")
             notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
         }
     }
@@ -93,12 +103,18 @@ class NotificationWorker(
             val currentTime = System.currentTimeMillis()
             val delay = unixToMillis(toDoItem.deadline) - currentTime
             Log.d("toDoNotifications", "scheduleNotification delay - $delay")
+            if (delay < 0) return
             Log.d("toDoNotifications", "scheduleNotification deadline - ${unixToMillis(toDoItem.deadline)}")
             Log.d("toDoNotifications", "scheduleNotification currentTime - $currentTime")
 
+            val importanceLowercaseStr = context.getString(R.string.Importance).lowercase()
+            val importanceValueStr = getStringByImportance(toDoItem.importance, context).lowercase()
+            val notificationMassage =
+                "${toDoItem.text} | $importanceLowercaseStr - $importanceValueStr"
+
             val inputData = Data.Builder()
                 .putString(NOTIFICATION_TITLE, context.getString(R.string.Deadline_missed))
-                .putString(NOTIFICATION_MESSAGE, toDoItem.text)
+                .putString(NOTIFICATION_MESSAGE, notificationMassage)
                 .putString(INPUT_DATA_TASK_ID, toDoItem.id)
                 .build()
 

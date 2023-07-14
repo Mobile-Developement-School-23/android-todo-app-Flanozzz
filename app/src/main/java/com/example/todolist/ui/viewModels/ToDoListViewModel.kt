@@ -8,6 +8,9 @@ import com.example.todolist.data.repository.IRepository
 import com.example.todolist.data.repository.ToDoRepository
 import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.data.source.network.UnsuccessfulResponseException
+import com.example.todolist.data.workers.NotificationBroadcastReceiver
+import com.example.todolist.data.workers.NotificationJobService
+import com.example.todolist.data.workers.NotificationWorker
 import com.example.todolist.data.workers.NotificationWorker.Companion.scheduleNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -97,6 +100,7 @@ open class ToDoListViewModel(
                     repository.changeItem(newToDoItem)
                 }
                 scheduleNotification(newToDoItem, context)
+                //NotificationBroadcastReceiver.scheduleNotification(newToDoItem, context)
             }
         }
     }
