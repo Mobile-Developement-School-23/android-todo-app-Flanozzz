@@ -10,8 +10,7 @@
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/composeView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/ThemeOverlay.Material3"/>
+        android:layout_height="match_parent"/>
 
 <!--    <ScrollView-->
 <!--        android:layout_width="match_parent"-->
