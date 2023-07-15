@@ -15,3 +15,4 @@
 - AppTheme функция
 - Preview экрана
 - Preview компонентов
+- Preview для тем
