@@ -1,4 +1,4 @@
-package com.example.todolist.ui.Screens.components
+package com.example.todolist.ui.screens.EditTaskScreen.components
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable

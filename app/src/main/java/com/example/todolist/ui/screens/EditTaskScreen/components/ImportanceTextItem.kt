@@ -1,4 +1,4 @@
-package com.example.todolist.ui.Screens.components
+package com.example.todolist.ui.screens.EditTaskScreen.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

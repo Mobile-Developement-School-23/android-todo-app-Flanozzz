@@ -6,7 +6,7 @@
     app:startDestination="@id/toDoListFragment2">
     <fragment
         android:id="@+id/toDoListFragment2"
-        android:name="com.example.todolist.ui.fragments.ToDoListFragment"
+        android:name="com.example.todolist.ui.screens.TaskListScreen.ToDoListFragment"
         android:label="fragment_to_do_list2"
         tools:layout="@layout/fragment_to_do_list" >
         <action
@@ -24,12 +24,12 @@
     </fragment>
     <fragment
         android:id="@+id/editTaskFragment2"
-        android:name="com.example.todolist.ui.fragments.EditTaskFragment"
+        android:name="com.example.todolist.ui.screens.EditTaskScreen.EditTaskFragment"
         android:label="fragment_edit_task2"
         tools:layout="@layout/fragment_edit_task" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.todolist.ui.fragments.SettingsFragment"
+        android:name="com.example.todolist.ui.screens.SettingsScreen.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

@@ -1,8 +1,6 @@
-package com.example.todolist.ui.Screens
+package com.example.todolist.ui.screens.EditTaskScreen
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,36 +14,26 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material3.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.Close
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
-import com.example.todolist.ui.Screens.actions.EditTaskScreenActions
-import com.example.todolist.ui.Screens.components.DeadlinePicker
-import com.example.todolist.ui.Screens.components.DeadlineSection
-import com.example.todolist.ui.Screens.components.DeadlineTimePicker
-import com.example.todolist.ui.Screens.components.DeleteTaskButton
-import com.example.todolist.ui.Screens.components.EditField
-import com.example.todolist.ui.Screens.components.Header
-import com.example.todolist.ui.Screens.components.ImportanceSection
-import com.example.todolist.ui.Screens.components.BottomSheetContent
+import com.example.todolist.ui.screens.EditTaskScreen.actions.EditTaskScreenActions
+import com.example.todolist.ui.screens.EditTaskScreen.components.DeadlinePicker
+import com.example.todolist.ui.screens.EditTaskScreen.components.DeadlineSection
+import com.example.todolist.ui.screens.EditTaskScreen.components.DeadlineTimePicker
+import com.example.todolist.ui.screens.EditTaskScreen.components.DeleteTaskButton
+import com.example.todolist.ui.screens.EditTaskScreen.components.EditField
+import com.example.todolist.ui.screens.EditTaskScreen.components.Header
+import com.example.todolist.ui.screens.EditTaskScreen.components.ImportanceSection
+import com.example.todolist.ui.screens.EditTaskScreen.components.BottomSheetContent
 import com.example.todolist.ui.theme.AppTheme
-import com.example.todolist.ui.theme.button
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 
 

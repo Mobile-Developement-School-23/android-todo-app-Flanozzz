@@ -1,4 +1,4 @@
-package com.example.todolist.ui.fragments
+package com.example.todolist.ui.screens.EditTaskScreen
 
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +13,7 @@ import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.ToDoApp
 import com.example.todolist.databinding.FragmentEditTaskBinding
-import com.example.todolist.ui.Screens.actions.EditTaskScreenActions
-import com.example.todolist.ui.Screens.Screen
+import com.example.todolist.ui.screens.EditTaskScreen.actions.EditTaskScreenActions
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.theme.AppTheme
 import com.example.todolist.ui.viewModels.ToDoListViewModel

@@ -1,4 +1,4 @@
-package com.example.todolist.ui.Screens.components
+package com.example.todolist.ui.screens.EditTaskScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -20,8 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
-import com.example.todolist.ui.Screens.components.ImportanceTextItem
-import com.example.todolist.ui.Screens.components.onImportanceTextItemClick
 
 @OptIn(ExperimentalMaterialApi::class)
 @Preview

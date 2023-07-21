@@ -1,4 +1,4 @@
-package com.example.todolist.ui.adapter
+package com.example.todolist.ui.screens.TaskListScreen.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater

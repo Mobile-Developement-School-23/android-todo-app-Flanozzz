@@ -1,4 +1,4 @@
-package com.example.todolist.ui.adapter
+package com.example.todolist.ui.screens.TaskListScreen.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.todolist.data.model.ToDoItem
