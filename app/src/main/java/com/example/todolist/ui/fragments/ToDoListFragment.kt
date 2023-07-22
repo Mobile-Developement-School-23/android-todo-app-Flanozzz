@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -64,6 +65,7 @@ class ToDoListFragment : Fragment() {
         binding.addTaskButton.setOnClickListener(addTaskButtonListener)
         binding.eyeButton.setOnClickListener(eyeButtonListener)
         binding.swipeRefreshLayout.setOnRefreshListener(onRefreshListener)
+        binding.settingsButton.setOnClickListener(settingsButtonListener)
     }
 
     private fun setupRecycleViewAdapter(){
@@ -111,7 +113,7 @@ class ToDoListFragment : Fragment() {
         } else {
             R.drawable.visibility
         }
-        binding.eyeButton.setImageResource(iconRes)
+        binding.eyeButton.setIconResource(iconRes)
     }
 
     private val onRefreshListener = SwipeRefreshLayout.OnRefreshListener {
@@ -129,6 +131,11 @@ class ToDoListFragment : Fragment() {
         selectedTaskViewModel.createTask()
         Navigation.findNavController(binding.root)
             .navigate(R.id.action_toDoListFragment2_to_editTaskFragment2)
+    }
+
+    private val settingsButtonListener = OnClickListener {
+        Navigation.findNavController(binding.root)
+            .navigate(R.id.action_toDoListFragment2_to_settingsFragment)
     }
 
     private val actionListener = object : IOnTaskTouchListener {

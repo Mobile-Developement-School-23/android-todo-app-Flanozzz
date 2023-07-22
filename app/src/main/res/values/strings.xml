@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ToDoList</string>
     <string name="MyTasks">Мои дела</string>
-    <string name="done">Выволнено —</string>
+    <string name="done">Выполнено —</string>
     <string name="buy_smth">Купить что-то</string>
     <string name="new_">Новое</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -13,8 +13,8 @@
     <string name="make_to">Сделать до</string>
     <string name="_2_2021">2 июня 2021</string>
     <string name="Delete">Удалить</string>
-    <string name="Low">Низкий</string>
-    <string name="High">!! Высокий</string>
+    <string name="Low">Низкая</string>
+    <string name="High">!! Высокая</string>
     <string name="No">Нет</string>
     <string name="Ready">Готово</string>
     <string name="Cancel">Отмена</string>
@@ -36,4 +36,13 @@
 
     <string name="retry">Ошибка синхронизации данных, пожалуйста обновите список</string>
     <string name="refresh">Обновить</string>
+    <string name="Settings">Настройки</string>
+    <string name="app_theme">Тема приложения</string>
+    <string name="light_theme">Светлая</string>
+    <string name="dark_theme">Темная</string>
+    <string name="system_theme">Как в системе</string>
+
+    <string name="time_has_already_passed">Введенное время уже прошло</string>
+    <string name="deadline_notifications">Уведомления о дедлайне</string>
+    <string name="Deadline_missed">Дедлайн пропущен!</string>
 </resources>

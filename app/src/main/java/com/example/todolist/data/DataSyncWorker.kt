@@ -1,7 +1,6 @@
 package com.example.todolist.data
 
 import android.content.Context
-import android.util.Log
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
@@ -10,9 +9,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.todolist.ToDoApp
 import com.example.todolist.data.repository.IRepository
-import com.example.todolist.data.repository.ToDoRepository
 import com.example.todolist.di.scopes.AppScope
-import dagger.BindsInstance
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

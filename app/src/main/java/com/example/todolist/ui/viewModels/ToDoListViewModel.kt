@@ -1,12 +1,12 @@
 package com.example.todolist.ui.viewModels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.data.repository.IRepository
-import com.example.todolist.data.repository.ToDoRepository
-import com.example.todolist.data.source.network.NetworkSource
 import com.example.todolist.data.source.network.UnsuccessfulResponseException
+import com.example.todolist.ui.notifications.NotificationScheduler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,8 @@ import kotlinx.coroutines.withContext
 
 
 open class ToDoListViewModel(
-    private val repository: IRepository
+    private val repository: IRepository,
+    private val notificationScheduler: NotificationScheduler
 ) : ViewModel() {
     private var _toDoItems: MutableStateFlow<List<ToDoItem>> = MutableStateFlow(emptyList())
     val toDoItems: Flow<List<ToDoItem>> = _toDoItems
@@ -44,6 +45,9 @@ open class ToDoListViewModel(
                     } else {
                         _viewableTasksStateFlow.value = list
                     }
+                }
+                list.forEach{
+                    notificationScheduler.scheduleNotification(it)
                 }
             }
         }
@@ -94,6 +98,7 @@ open class ToDoListViewModel(
                 } else{
                     repository.changeItem(newToDoItem)
                 }
+                notificationScheduler.scheduleNotification(newToDoItem)
             }
         }
     }

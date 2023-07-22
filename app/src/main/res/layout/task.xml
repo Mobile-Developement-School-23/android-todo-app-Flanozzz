@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:foreground="?attr/selectableItemBackground">
     <!--        android:buttonTint="@color/checkbox_color_selector"-->
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/taskInfoCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/checkbox_color_selector"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/taskInfoContainer"
-        app:layout_constraintBottom_toBottomOf="@id/taskInfoContainer"
         android:layout_marginStart="6dp"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -20,22 +20,25 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/taskInfoCheckBox"
         app:layout_constraintEnd_toStartOf="@id/infoTaskButton"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
 
         <ImageView
             android:id="@+id/importanceIcon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:src="@drawable/ic_low_important"
             android:visibility="visible"
-            android:layout_gravity="center"
-            android:paddingEnd="7dp"/>
+            android:layout_gravity="center|top"
+            android:paddingEnd="7dp"
+            android:paddingTop="3dp"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/taskInfoTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="kkkkkkkddddddddkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkуууууууууу"
+            android:text="Akkkkkkddddddddkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkуууууууууу"
             android:ellipsize="end"
             android:maxLines="3"
             android:textSize="@dimen/body_text_size"
@@ -44,25 +47,20 @@
             app:layout_constraintStart_toEndOf="@id/taskInfoCheckBox"
             app:layout_constraintEnd_toStartOf="@id/infoTaskButton"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
             />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <ImageButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/infoTaskButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/info_outline"
-        android:background="@null"
-        app:tint="?android:attr/textColorTertiary"
+        app:icon="@drawable/info_outline"
+        style="@style/Widget.Material3.Button.IconButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/taskInfoContainer"
-        app:layout_constraintBottom_toBottomOf="@id/taskInfoContainer"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingEnd="20dp"
-        android:paddingStart="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="10dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

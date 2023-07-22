@@ -18,14 +18,15 @@ class SelectedTaskViewModel(
     private var _selectedTaskFlow = MutableStateFlow(ToDoItem.getDefaultTask(deviceId))
     val selectedTaskFlow: Flow<ToDoItem> = _selectedTaskFlow
 
-    private var isNewTask = false
+    private var _isNewTask = MutableStateFlow(true)
+    val isNewTaskFlow: Flow<Boolean> = _isNewTask
 
     fun selectTask(id: String){
         viewModelScope.launch(Dispatchers.IO) {
             val selectedToDoItem = repository.getById(id)
             withContext(Dispatchers.Main){
                 if(selectedToDoItem != null){
-                    isNewTask = false
+                    _isNewTask.value = false
                     _selectedTaskFlow.value = selectedToDoItem
                 }
                 else{
@@ -36,19 +37,33 @@ class SelectedTaskViewModel(
     }
 
     fun createTask(){
-        isNewTask = true
+        _isNewTask.value = true
         _selectedTaskFlow.value = ToDoItem.getDefaultTask(deviceId)
     }
 
-    fun isNewTask(): Boolean{
-        return isNewTask
+//    fun isNewTask(): Boolean{
+//        return isNewTask
+//    }
+
+    fun updateText(text: String){
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
+            text = text,
+            dateOfChange = getCurrentUnixTime(),
+            lastUpdatedBy = deviceId,
+        )
     }
 
-    fun setNewData(newImportance: ToDoItem.Importance, newDeadline: Long?, newText: String){
+    fun updateDeadline(deadline: Long?){
         _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
-            text = newText,
-            deadline = newDeadline,
-            importance = newImportance,
+            deadline = deadline,
+            dateOfChange = getCurrentUnixTime(),
+            lastUpdatedBy = deviceId,
+        )
+    }
+
+    fun updateImportance(importance: ToDoItem.Importance){
+        _selectedTaskFlow.value = _selectedTaskFlow.value.copy(
+            importance = importance,
             dateOfChange = getCurrentUnixTime(),
             lastUpdatedBy = deviceId,
         )

@@ -49,11 +49,11 @@ class ToDoListAdapter (
 
     private fun setListeners(holder: ToDoItemViewHolder, toDoItem: ToDoItem, position: Int){
         with(holder.binding){
-            taskInfoContainer.setOnClickListener{
+            rootContainer.setOnClickListener{
                 actionListener.onChangeButtonClick(toDoItem.id)
             }
 
-            taskInfoContainer.setOnLongClickListener{
+            rootContainer.setOnLongClickListener{
                 showPopupMenuAction(it, toDoItem)
                 return@setOnLongClickListener true
             }
@@ -99,8 +99,8 @@ class ToDoListAdapter (
 
         val dateOfCreateString = view.context.getString(R.string.date_of_create)
         val dateOfChangeString = view.context.getString(R.string.date_of_change)
-        val dateOfCreateText = "$dateOfCreateString: ${getFormattedDate(task.dateOfCreate)}"
-        val dateOfChangeText = "$dateOfChangeString: ${getFormattedDate(task.dateOfChange)}"
+        val dateOfCreateText = "$dateOfCreateString: ${unixTimeToDMY(task.dateOfCreate)}"
+        val dateOfChangeText = "$dateOfChangeString: ${unixTimeToDMY(task.dateOfChange)}"
 
         popupMenu.menu.add(Menu.NONE, DATE_OF_CREATE, Menu.NONE, dateOfCreateText)
         popupMenu.menu.add(Menu.NONE, DATE_OF_CHANGE, Menu.NONE, dateOfChangeText)

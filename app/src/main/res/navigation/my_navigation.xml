@@ -11,11 +11,25 @@
         tools:layout="@layout/fragment_to_do_list" >
         <action
             android:id="@+id/action_toDoListFragment2_to_editTaskFragment2"
-            app:destination="@id/editTaskFragment2" />
+            app:destination="@id/editTaskFragment2"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/stable_anim"
+            app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_toDoListFragment2_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/stable_anim"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/editTaskFragment2"
         android:name="com.example.todolist.ui.fragments.EditTaskFragment"
         android:label="fragment_edit_task2"
         tools:layout="@layout/fragment_edit_task" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.todolist.ui.fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

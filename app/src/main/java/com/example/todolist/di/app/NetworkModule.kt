@@ -2,8 +2,8 @@ package com.example.todolist.di.app
 
 import com.example.todolist.data.api.ToDoApi
 import com.example.todolist.data.model.ToDoItem
-import com.example.todolist.utils.Constants.Companion.BASEURL
-import com.example.todolist.utils.Constants.Companion.TOKEN
+import com.example.todolist.utils.Constants.BASEURL
+import com.example.todolist.utils.Constants.TOKEN
 import com.example.todolist.data.api.ImportanceConverter
 import com.example.todolist.di.scopes.AppScope
 import com.google.gson.Gson
