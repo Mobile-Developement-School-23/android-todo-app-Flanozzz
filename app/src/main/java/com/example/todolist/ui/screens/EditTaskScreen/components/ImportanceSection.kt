@@ -1,4 +1,4 @@
-package com.example.todolist.ui.Screens.components
+package com.example.todolist.ui.screens.EditTaskScreen.components
 
 import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing

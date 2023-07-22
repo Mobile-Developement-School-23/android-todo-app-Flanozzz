@@ -45,4 +45,6 @@
     <string name="time_has_already_passed">Введенное время уже прошло</string>
     <string name="deadline_notifications">Уведомления о дедлайне</string>
     <string name="Deadline_missed">Дедлайн пропущен!</string>
+
+    <string name="Send">Поделиться</string>
 </resources>

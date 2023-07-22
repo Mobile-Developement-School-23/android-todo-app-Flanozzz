@@ -1,7 +1,7 @@
 package com.example.todolist.di.fragment
 
 import com.example.todolist.di.scopes.FragmentScope
-import com.example.todolist.ui.fragments.SettingsFragment
+import com.example.todolist.ui.screens.SettingsScreen.SettingsFragment
 import dagger.Subcomponent
 
 @Subcomponent

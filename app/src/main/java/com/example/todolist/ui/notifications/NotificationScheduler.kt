@@ -56,9 +56,9 @@ class NotificationScheduler @Inject constructor(
         )
         Log.w("toDoNotifications", "setExactAndAllowWhileIdle notification time - $time")
 
-        //val inputData = buildInputData(notificationMassage, toDoItem)
-        //val workRequest = buildWorkRequest(delay, inputData, toDoItem)
-        //performWorkWithCancellationAndEnqueue(toDoItem, workRequest)
+//        val inputData = buildInputData(notificationMassage, toDoItem)
+//        val workRequest = buildWorkRequest(delay, inputData, toDoItem)
+//        performWorkWithCancellationAndEnqueue(toDoItem, workRequest)
     }
 
     private fun calculateDelay(toDoItemDeadline: Long): Long{

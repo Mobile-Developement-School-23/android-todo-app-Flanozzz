@@ -1,4 +1,4 @@
-package com.example.todolist.ui.fragments
+package com.example.todolist.ui.screens.TaskListScreen
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,21 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.Navigation
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.todolist.ui.adapter.ToDoListAdapter
-import com.example.todolist.ui.adapter.IOnTaskTouchListener
+import com.example.todolist.ui.screens.TaskListScreen.adapter.ToDoListAdapter
+import com.example.todolist.ui.screens.TaskListScreen.adapter.IOnTaskTouchListener
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.R
 import com.example.todolist.ToDoApp
 import com.example.todolist.ui.viewModels.SelectedTaskViewModel
 import com.example.todolist.ui.viewModels.ToDoListViewModel
 import com.example.todolist.databinding.FragmentToDoListBinding
-import com.example.todolist.ui.adapter.NonScrollableLinearLayoutManager
+import com.example.todolist.ui.screens.TaskListScreen.adapter.NonScrollableLinearLayoutManager
 import com.example.todolist.ui.viewModels.ViewModelFactory
 import com.example.todolist.utils.getCurrentUnixTime
 import kotlinx.coroutines.Dispatchers

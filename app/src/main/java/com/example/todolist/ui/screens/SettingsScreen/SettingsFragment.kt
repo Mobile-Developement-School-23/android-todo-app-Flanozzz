@@ -1,6 +1,5 @@
-package com.example.todolist.ui.fragments
+package com.example.todolist.ui.screens.SettingsScreen
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,7 +13,6 @@ import com.example.todolist.ToDoApp
 import com.example.todolist.databinding.FragmentSettingsBinding
 import com.example.todolist.utils.Constants.DARK_THEME
 import com.example.todolist.utils.Constants.LIGHT_THEME
-import com.example.todolist.utils.Constants.SHARED_PREFERENCES_NAME
 import com.example.todolist.utils.Constants.SYSTEM_THEME
 import com.example.todolist.utils.Constants.THEME
 import com.example.todolist.utils.setSettingsTheme

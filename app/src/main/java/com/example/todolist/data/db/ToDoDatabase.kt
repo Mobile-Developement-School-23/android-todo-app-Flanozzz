@@ -6,6 +6,5 @@ import com.example.todolist.data.model.ToDoItem
 
 @Database(entities = [ToDoItem::class], version = 2, exportSchema = false)
 abstract class ToDoDatabase: RoomDatabase() {
-
     abstract fun toDoItemDao(): ToDoItemDao
 }

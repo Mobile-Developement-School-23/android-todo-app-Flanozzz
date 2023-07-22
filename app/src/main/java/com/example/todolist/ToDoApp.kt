@@ -2,9 +2,11 @@ package com.example.todolist
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import com.example.todolist.data.DataSyncWorker
 import com.example.todolist.di.app.AppComponent
 import com.example.todolist.di.app.DaggerAppComponent
+import com.example.todolist.ui.MainActivity
 import com.example.todolist.utils.Constants.SHARED_PREFERENCES_NAME
 import com.example.todolist.utils.setSettingsTheme
 

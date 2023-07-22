@@ -1,4 +1,4 @@
-package com.example.todolist.ui.adapter
+package com.example.todolist.ui.screens.TaskListScreen.adapter
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
