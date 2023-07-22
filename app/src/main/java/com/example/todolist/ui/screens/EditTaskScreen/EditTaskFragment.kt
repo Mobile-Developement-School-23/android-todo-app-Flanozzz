@@ -1,11 +1,13 @@
 package com.example.todolist.ui.screens.EditTaskScreen
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -79,7 +81,8 @@ class EditTaskFragment : Fragment() {
                             saveButtonAction = saveTaskAction,
                             updateTextAction = updateTextAction,
                             hideKeyboardAction = { hideKeyboard(requireActivity()) },
-                            getStringByImportanceAction = { getStringByImportance(it, requireContext()) }
+                            getStringByImportanceAction = { getStringByImportance(it, requireContext()) },
+                            shareAction = { shareAction() }
                         ),
                         isNewTask = isNewTaskState.value
                     )
@@ -88,6 +91,24 @@ class EditTaskFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun shareAction(){
+        if(toDoItem == null) return
+        val messageString = buildMessageString(toDoItem!!)
+        Intent(Intent.ACTION_SEND).also{
+            it.type = "text/plain"
+            it.putExtra(Intent.EXTRA_TEXT, messageString)
+            requireContext().startActivity(Intent.createChooser(it, "Share with!!!!!!"))
+        }
+    }
+
+    private fun buildMessageString(toDoItem: ToDoItem): String{
+        return """
+            ${resources.getString(R.string.Importance)}: ${getStringByImportance(toDoItem.importance, requireContext())}
+            
+            ${toDoItem.text}
+        """.trimIndent()
     }
 
     private val calendarSelection = CalendarSelection.Date {

@@ -1,6 +1,8 @@
 package com.example.todolist.ui.screens.EditTaskScreen
 
+import android.content.Intent
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,16 +15,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
+import com.example.todolist.R
 import com.example.todolist.data.model.ToDoItem
 import com.example.todolist.ui.screens.EditTaskScreen.actions.EditTaskScreenActions
 import com.example.todolist.ui.screens.EditTaskScreen.components.DeadlinePicker
@@ -105,8 +118,24 @@ fun Screen(
                             Divider(
                                 Modifier.padding(top = 16.dp, bottom = 16.dp)
                             )
-                            DeleteTaskButton(actions.deleteButtonClickAction, isNewTask = isNewTask)
-                            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)) {}
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                DeleteTaskButton(actions.deleteButtonClickAction, isNewTask = isNewTask)
+                                TextButton(onClick = {
+                                    actions.shareAction()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Share,
+                                        contentDescription = "Send Button"
+                                    )
+                                }
+                            }
+
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 20.dp)) {}
                         }
                     }
                 }

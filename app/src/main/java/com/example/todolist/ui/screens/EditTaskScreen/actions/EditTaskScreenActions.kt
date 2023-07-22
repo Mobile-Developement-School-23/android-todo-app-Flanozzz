@@ -14,7 +14,8 @@ data class EditTaskScreenActions(
     val saveButtonAction: () -> Unit,
     val updateTextAction: (text: String) -> Unit,
     val hideKeyboardAction: () -> Unit,
-    val getStringByImportanceAction: (importance: ToDoItem.Importance) -> String
+    val getStringByImportanceAction: (importance: ToDoItem.Importance) -> String,
+    val shareAction: () -> Unit
 ){
     companion object{
         fun getEmptyActions(): EditTaskScreenActions {
@@ -23,6 +24,7 @@ data class EditTaskScreenActions(
                 ClockSelection.HoursMinutes{_, _ -> },
                 {}, {}, {}, {}, {}, {}, {},
                 { return@EditTaskScreenActions "" },
+                {}
             )
         }
     }
