@@ -81,7 +81,7 @@ fun Screen(
                 sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
             ) {
                 Box(modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize( )
                 ){
                     Column {
                         Header(
